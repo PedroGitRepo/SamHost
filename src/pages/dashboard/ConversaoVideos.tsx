@@ -149,7 +149,7 @@ const ConversaoVideos: React.FC = () => {
         const data = await response.json();
         if (data.success) {
           setVideos(data.videos);
-          
+
           // Carregar status de conversão para cada vídeo
           data.videos.forEach((video: VideoConversion) => {
             loadConversionStatus(video.id);
@@ -186,7 +186,7 @@ const ConversaoVideos: React.FC = () => {
   const openConversionModal = (video: VideoConversion) => {
     setSelectedVideo(video);
     const userBitrateLimit = user?.bitrate || 2500;
-    
+
     // Configurar qualidade recomendada baseada no vídeo atual
     let recommendedQuality = 'alta';
     if (video.current_bitrate > userBitrateLimit) {
@@ -338,7 +338,7 @@ const ConversaoVideos: React.FC = () => {
 
     const cleanPath = videoPath.replace(/^\/+/, '').replace(/^(content\/|streaming\/)?/, '');
     const pathParts = cleanPath.split('/');
-    
+
     if (pathParts.length >= 3) {
       const userLogin = pathParts[0];
       const folderName = pathParts[1];
@@ -347,7 +347,7 @@ const ConversaoVideos: React.FC = () => {
       const domain = 'stmv1.udicast.com';
       return `https://${domain}:1443/play.php?login=${userLogin}&video=${folderName}/${finalFileName}`;
     }
-    
+
     return '';
   };
 
@@ -379,74 +379,74 @@ const ConversaoVideos: React.FC = () => {
 
   const getCompatibilityIcon = (video: VideoConversion) => {
     const status = conversionStatuses[video.id];
-    
+
     if (converting[video.id]) {
       return <Loader2 className="h-5 w-5 text-blue-600 animate-spin" />;
     }
-    
+
     if (status?.status === 'concluida') {
       return <CheckCircle className="h-5 w-5 text-green-600" />;
     }
-    
+
     if (video.compatibility_status === 'compatible' || video.can_use_current) {
       return <CheckCircle className="h-5 w-5 text-green-600" />;
     }
-    
+
     if (video.needs_conversion) {
       return <AlertCircle className="h-5 w-5 text-red-600" />;
     }
-    
+
     return <AlertCircle className="h-5 w-5 text-yellow-600" />;
   };
 
   const getCompatibilityText = (video: VideoConversion) => {
     const status = conversionStatuses[video.id];
-    
+
     if (converting[video.id]) {
       return 'Convertendo...';
     }
-    
+
     if (status?.status === 'concluida') {
       return 'Otimizado';
     }
-    
+
     if (status?.status === 'erro') {
       return 'Erro na Conversão';
     }
-    
+
     return video.compatibility_message || 'Verificando...';
   };
 
   const getCompatibilityColor = (video: VideoConversion) => {
     const status = conversionStatuses[video.id];
-    
+
     if (converting[video.id]) {
       return 'text-blue-600';
     }
-    
+
     if (status?.status === 'concluida') {
       return 'text-green-600';
     }
-    
+
     if (status?.status === 'erro') {
       return 'text-red-600';
     }
-    
+
     if (video.compatibility_status === 'compatible' || video.can_use_current) {
       return 'text-green-600';
     }
-    
+
     if (video.needs_conversion) {
       return 'text-red-600';
     }
-    
+
     return 'text-yellow-600';
   };
 
   const getQualityRecommendation = (video: VideoConversion) => {
     const userLimit = user?.bitrate || 2500;
     const currentBitrate = video.current_bitrate || 0;
-    
+
     if (currentBitrate <= 800) return 'baixa';
     if (currentBitrate <= 1500) return 'media';
     if (currentBitrate <= 2500) return 'alta';
@@ -516,11 +516,10 @@ const ConversaoVideos: React.FC = () => {
           {folders.map((folder) => (
             <div
               key={folder.id}
-              className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                selectedFolder === folder.id.toString()
+              className={`border rounded-lg p-4 cursor-pointer transition-all ${selectedFolder === folder.id.toString()
                   ? 'border-primary-500 bg-primary-50'
                   : 'border-gray-200 hover:border-gray-300'
-              }`}
+                }`}
               onClick={() => setSelectedFolder(folder.id.toString())}
             >
               <div className="flex items-center space-x-3">
@@ -573,18 +572,16 @@ const ConversaoVideos: React.FC = () => {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">Formato:</span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        video.is_mp4 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${video.is_mp4 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                        }`}>
                         {video.formato_original?.toUpperCase() || 'N/A'}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">Bitrate:</span>
-                      <span className={`font-medium ${
-                        video.current_bitrate > (user?.bitrate || 2500) ? 'text-red-600' : 'text-gray-900'
-                      }`}>
+                      <span className={`font-medium ${video.current_bitrate > (user?.bitrate || 2500) ? 'text-red-600' : 'text-gray-900'
+                        }`}>
                         {video.current_bitrate || 0} kbps
                       </span>
                     </div>
@@ -731,11 +728,10 @@ const ConversaoVideos: React.FC = () => {
                   {qualityPresets.filter(q => q.available).map((preset) => (
                     <div
                       key={preset.quality}
-                      className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                        conversionSettings.quality === preset.quality
+                      className={`border rounded-lg p-4 cursor-pointer transition-all ${conversionSettings.quality === preset.quality
                           ? 'border-primary-500 bg-primary-50'
                           : 'border-gray-200 hover:border-gray-300'
-                      }`}
+                        }`}
                       onClick={() => setConversionSettings(prev => ({
                         ...prev,
                         quality: preset.quality,
@@ -832,8 +828,8 @@ const ConversaoVideos: React.FC = () => {
                   <div>
                     <span className="text-green-700">Bitrate final:</span>
                     <span className="ml-2 font-medium">
-                      {conversionSettings.use_custom 
-                        ? conversionSettings.custom_bitrate 
+                      {conversionSettings.use_custom
+                        ? conversionSettings.custom_bitrate
                         : qualityPresets.find(q => q.quality === conversionSettings.quality)?.bitrate || 2500
                       } kbps
                     </span>
@@ -841,8 +837,8 @@ const ConversaoVideos: React.FC = () => {
                   <div>
                     <span className="text-green-700">Resolução final:</span>
                     <span className="ml-2 font-medium">
-                      {conversionSettings.use_custom 
-                        ? conversionSettings.custom_resolution 
+                      {conversionSettings.use_custom
+                        ? conversionSettings.custom_resolution
                         : qualityPresets.find(q => q.quality === conversionSettings.quality)?.resolution || '1920x1080'
                       }
                     </span>
@@ -863,7 +859,7 @@ const ConversaoVideos: React.FC = () => {
                 Cancelar
               </button>
               <button
-                onClick={startConversion}
+                onClick={() => startConversion()}
                 className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center"
               >
                 <Settings className="h-4 w-4 mr-2" />
