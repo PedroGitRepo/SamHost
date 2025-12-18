@@ -8,38 +8,34 @@ const DadosConexao: React.FC = () => {
   const { user } = useAuth();
   const [showFtpPassword, setShowFtpPassword] = useState(false);
   const [showStreamPassword, setShowStreamPassword] = useState(false);
+  const [streamPassword, setStreamPassword] = useState('');
+  const token = localStorage.getItem('auth_token');
 
   const userLogin = user?.usuario || (user?.email ? user.email.split('@')[0] : `user_${user?.id || 'usuario'}`);
 
-  const [loading, setLoading] = useState(true);
-  const [obsConfig, setObsConfig] = useState<any>(null);
-
   useEffect(() => {
-    const fetchObsConfig = async () => {
+    const fetchStreamPassword = async () => {
       try {
         const response = await fetch('/api/dados-conexao/obs-config', {
-          credentials: 'include'
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         });
 
         const data = await response.json();
 
-        if (!data.success) {
-          throw new Error(data.error || 'Erro ao buscar dados de conexão');
+        if (data?.success && data?.obs_config?.fmle_password) {
+          setStreamPassword(data.obs_config.fmle_password);
         }
-
-        setObsConfig(data.obs_config);
-      } catch (error: any) {
-        console.error(error);
-        toast.error('Erro ao carregar dados de conexão');
-      } finally {
-        setLoading(false);
+      } catch (err) {
+        console.error('Erro ao buscar senha do streaming', err);
       }
     };
 
-    fetchObsConfig();
-  }, []);
-
-  const streamPassword = obsConfig?.fmle_password || '';
+    if (token) {
+      fetchStreamPassword();
+    }
+  }, [token]);
 
   // Dados de conexão FTP
   const ftpData = {

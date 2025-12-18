@@ -52,7 +52,7 @@ ON DUPLICATE KEY UPDATE
 
 -- Adicionar colunas de configuração da API Wowza na tabela wowza_servers (se não existirem)
 ALTER TABLE wowza_servers
-ADD COLUMN IF NOT EXISTS porta_api INT DEFAULT 8087 COMMENT 'Porta da API REST do Wowza',
+ADD COLUMN IF NOT EXISTS porta_api INT DEFAULT 6980 COMMENT 'Porta da API REST do Wowza',
 ADD COLUMN IF NOT EXISTS usuario_api VARCHAR(100) DEFAULT 'admin' COMMENT 'Usuário da API REST do Wowza',
 ADD COLUMN IF NOT EXISTS senha_api VARCHAR(255) DEFAULT 'admin' COMMENT 'Senha da API REST do Wowza';
 

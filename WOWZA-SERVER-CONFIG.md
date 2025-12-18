@@ -13,7 +13,7 @@ A tabela `wowza_servers` armazena as configurações de todos os servidores Wowz
 | `ip` | VARCHAR(45) | Endereço IP do servidor (único) |
 | `dominio` | VARCHAR(255) | Domínio do servidor (opcional, priorizado sobre IP) |
 | `porta_ssh` | INT(6) | Porta SSH (padrão: 22) |
-| `porta_api` | INT(11) | Porta da API REST do Wowza (padrão: 8087) |
+| `porta_api` | INT(11) | Porta da API REST do Wowza (padrão: 6980) |
 | `usuario_api` | VARCHAR(100) | Usuário da API REST (padrão: 'admin') |
 | `senha_api` | VARCHAR(255) | Senha da API REST do Wowza |
 | `senha_root` | VARCHAR(255) | Senha root SSH do servidor |
@@ -45,7 +45,7 @@ const [serverRows] = await db.execute(
 
 const server = serverRows[0];
 const wowzaHost = server.dominio || server.ip; // Priorizar domínio
-const wowzaPort = server.porta_api || 8087;
+const wowzaPort = server.porta_api || 6980;
 const wowzaUser = server.usuario_api || 'admin';
 const wowzaPassword = server.senha_api || 'admin';
 ```
@@ -94,7 +94,7 @@ const [rows] = await db.execute(
 
 ## Endpoints da API Wowza
 
-A API REST do Wowza usa a porta configurada em `porta_api` (padrão: 8087).
+A API REST do Wowza usa a porta configurada em `porta_api` (padrão: 6980).
 
 ### Exemplos de Endpoints
 

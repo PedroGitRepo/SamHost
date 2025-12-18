@@ -24,13 +24,13 @@ class WowzaStreamingService {
 
       if (serverRows.length === 0) {
         // Usar servidor padrão
-        this.baseUrl = 'http://51.222.156.223:8087';
+        this.baseUrl = 'http://51.222.156.223:6980';
         this.username = 'admin';
         this.password = 'admin';
       } else {
         const server = serverRows[0];
         const host = server.dominio || server.ip;
-        const port = server.porta_api || 8087;
+        const port = 6980;
         this.baseUrl = `http://${host}:${port}`;
         this.username = server.usuario_api || 'admin';
         this.password = server.senha_api || 'admin';
@@ -200,7 +200,7 @@ class WowzaStreamingService {
       const streamName = smilFile.replace('.smil', '');
 
       const mediaCasterConfig = {
-        restURI: `http://localhost:8087/v2/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${userLogin}/instances/_definst_/streamfiles/${smilFile}`,
+        restURI: `http://localhost:6980/v2/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${userLogin}/instances/_definst_/streamfiles/${smilFile}`,
         serverName: "_defaultServer_",
         vhostName: "_defaultVHost_",
         appName: userLogin,
@@ -271,7 +271,7 @@ class WowzaStreamingService {
   async configurePushPublish(userLogin, platform) {
     try {
       const pushConfig = {
-        restURI: `http://localhost:8087/v2/servers/_defaultServer_/applications/${userLogin}/pushpublish/mapentries/${platform.platform.codigo}`,
+        restURI: `http://localhost:6980/v2/servers/_defaultServer_/applications/${userLogin}/pushpublish/mapentries/${platform.platform.codigo}`,
         serverName: "_defaultServer_",
         appName: userLogin,
         appInstance: "_definst_",

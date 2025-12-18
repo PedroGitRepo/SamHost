@@ -65,7 +65,7 @@ class WowzaLiveManager {
                 wowzaPassword = serverConfig.senha_api || senha;
             }
 
-            // CORREÇÃO: Sempre usar porta 6980 para API do Wowza (não 8087)
+            // CORREÇÃO: Sempre usar porta 6980 para API do Wowza (não 6980)
             const apiPort = 6980;
             const url = `http://${servidor}:${apiPort}/v2/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${login}/pushpublish/mapentries/${live}/actions/${acao}`;
 

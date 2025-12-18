@@ -820,7 +820,7 @@ router.get('/obs-status', async (req, res) => {
 
         const server = serverRows[0];
         const wowzaHost = server.dominio || server.ip;
-        const wowzaPort = server.porta_api || 8087;
+        const wowzaPort = server.porta_api || 6980;
         // Usar credenciais do banco ou valores padrão
         const wowzaUser = server.usuario_api || 'admin';
         const wowzaPassword = server.senha_api || 'admin';

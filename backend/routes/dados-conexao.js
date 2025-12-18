@@ -11,7 +11,7 @@ router.get('/obs-config', authMiddleware, async (req, res) => {
     // Para revendas, usar o ID efetivo do usuário
     const userId = req.user.effective_user_id || req.user.id;
     const userLogin = req.user.usuario || `user_${userId}`;
-    
+
     // Buscar configurações do usuário
     const [userConfigRows] = await db.execute(
       `SELECT 
@@ -32,22 +32,37 @@ router.get('/obs-config', authMiddleware, async (req, res) => {
          WHERE codigo = ? AND status = 1 LIMIT 1`,
         [userId]
       );
-      
+
       if (revendaRows.length > 0) {
         userConfigRows.push(revendaRows[0]);
       }
     }
     if (userConfigRows.length === 0) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Configurações do usuário não encontradas' 
+      return res.status(404).json({
+        success: false,
+        error: 'Configurações do usuário não encontradas'
       });
     }
 
     const userConfig = userConfigRows[0];
 
-    const streamPassword = userConfig.senha_stream || '';
-    
+    // 🔐 Buscar senha de stream (revenda)
+    let streamPassword = '';
+
+    if (req.user.tipo === 'revenda') {
+      const [pwdRows] = await db.execute(
+        `SELECT senha_stream 
+     FROM revendas 
+     WHERE codigo = ? AND status = 1 
+     LIMIT 1`,
+        [userId]
+      );
+
+      if (pwdRows.length > 0) {
+        streamPassword = pwdRows[0].senha_stream || '';
+      }
+    }
+
     // Buscar servidor do usuário através das pastas
     const [serverRows] = await db.execute(
       'SELECT servidor_id FROM folders WHERE user_id = ? LIMIT 1',
@@ -76,7 +91,7 @@ router.get('/obs-config', authMiddleware, async (req, res) => {
     try {
       const userPath = `/home/streaming/${userLogin}`;
       const pathExists = await SSHManager.checkDirectoryExists(serverId, userPath);
-      
+
       if (!pathExists) {
         console.log(`📁 Criando estrutura para usuário ${userLogin} no servidor ${serverId}`);
         await SSHManager.createCompleteUserStructure(serverId, userLogin, {
@@ -92,10 +107,12 @@ router.get('/obs-config', authMiddleware, async (req, res) => {
     // Verificar se há transmissão OBS ativa via API Wowza
     let obsStreamActive = false;
     let obsStreamInfo = null;
+    let incomingStreamsResult = null;
+
     try {
       const WowzaStreamingService = require('../config/WowzaStreamingService');
-      const incomingStreamsResult = await WowzaStreamingService.checkUserIncomingStreams(userId);
-      
+      incomingStreamsResult = await WowzaStreamingService.checkUserIncomingStreams(userId);
+
       if (incomingStreamsResult.hasActiveStreams) {
         obsStreamActive = true;
         const activeStream = incomingStreamsResult.activeStreams[0];
@@ -110,6 +127,7 @@ router.get('/obs-config', authMiddleware, async (req, res) => {
     } catch (wowzaError) {
       console.warn('Erro ao verificar Wowza API:', wowzaError.message);
     }
+
     // Verificar limites e gerar avisos
     const warnings = [];
     if (requestedBitrate && requestedBitrate > maxBitrate) {
@@ -124,11 +142,11 @@ router.get('/obs-config', authMiddleware, async (req, res) => {
     if (!obsStreamActive && !incomingStreamsResult?.success) {
       warnings.push('Wowza API indisponível - verificação de stream limitada');
     }
-    
+
     const usedSpace = userConfig.espaco_usado || 0;
     const totalSpace = userConfig.espaco || 1000;
     const storagePercentage = Math.round((usedSpace / totalSpace) * 100);
-    
+
     if (storagePercentage > 90) {
       warnings.push('Espaço de armazenamento quase esgotado');
     }
@@ -136,7 +154,7 @@ router.get('/obs-config', authMiddleware, async (req, res) => {
     // Configurar URLs baseadas no ambiente
     // Usar domínio oficial do servidor Wowza
     const wowzaHost = 'stmv1.udicast.com';
-    
+
     res.json({
       success: true,
       obs_config: {
@@ -202,6 +220,22 @@ router.get('/fmle-profile', authMiddleware, async (req, res) => {
     const userBitrate = req.user.bitrate || 2500;
     const userPassword = streamPassword; // Senha padrão do usuário
 
+    let streamPassword = '';
+
+    if (req.user.tipo === 'revenda') {
+      const [pwdRows] = await db.execute(
+        `SELECT senha_stream 
+     FROM revendas 
+     WHERE codigo = ? AND status = 1 
+     LIMIT 1`,
+        [userId]
+      );
+
+      if (pwdRows.length > 0) {
+        streamPassword = pwdRows[0].senha_stream || '';
+      }
+    }
+
     // Gerar XML do profile FMLE personalizado
     const profileXml = `<?xml version="1.0" encoding="UTF-8"?>
 <FMLEDocument version="2.0">
@@ -256,7 +290,7 @@ router.get('/fmle-profile', authMiddleware, async (req, res) => {
     res.setHeader('Content-Type', 'application/xml');
     res.setHeader('Content-Disposition', `attachment; filename="profile_fmle_${userLogin}.xml"`);
     res.setHeader('Cache-Control', 'no-cache');
-    
+
     res.send(profileXml);
   } catch (error) {
     console.error('Erro ao gerar profile FMLE:', error);
