@@ -45,6 +45,8 @@ router.get('/obs-config', authMiddleware, async (req, res) => {
     }
 
     const userConfig = userConfigRows[0];
+
+    const streamPassword = userConfig.senha_stream || '';
     
     // Buscar servidor do usuário através das pastas
     const [serverRows] = await db.execute(
@@ -153,7 +155,7 @@ router.get('/obs-config', authMiddleware, async (req, res) => {
         fmle_server: `rtmp://${wowzaHost}:1935/${userLogin}`,
         fmle_stream: 'live',
         fmle_username: userLogin,
-        fmle_password: 'teste2025', // Senha padrão do usuário
+        fmle_password: streamPassword,
         // URLs para SMIL (playlists)
         smil_hls_url: `https://${wowzaHost}/${userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8`,
         smil_hls_http_url: `https://${wowzaHost}/${userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8`,
@@ -198,7 +200,7 @@ router.get('/fmle-profile', authMiddleware, async (req, res) => {
     const userId = req.user.effective_user_id || req.user.id;
     const userLogin = req.user.usuario || `user_1`;
     const userBitrate = req.user.bitrate || 2500;
-    const userPassword = 'teste2025'; // Senha padrão do usuário
+    const userPassword = streamPassword; // Senha padrão do usuário
 
     // Gerar XML do profile FMLE personalizado
     const profileXml = `<?xml version="1.0" encoding="UTF-8"?>
