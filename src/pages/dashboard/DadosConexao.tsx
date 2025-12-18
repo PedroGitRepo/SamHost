@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronLeft, Copy, Server, Eye, EyeOff, Radio, CheckCircle, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -10,13 +10,42 @@ const DadosConexao: React.FC = () => {
   const [showStreamPassword, setShowStreamPassword] = useState(false);
 
   const userLogin = user?.usuario || (user?.email ? user.email.split('@')[0] : `user_${user?.id || 'usuario'}`);
-  const userPassword = 'teste2025'; // Senha padrão do usuário para streaming
+
+  const [loading, setLoading] = useState(true);
+  const [obsConfig, setObsConfig] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchObsConfig = async () => {
+      try {
+        const response = await fetch('/api/dados-conexao/obs-config', {
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Erro ao buscar dados de conexão');
+        }
+
+        setObsConfig(data.obs_config);
+      } catch (error: any) {
+        console.error(error);
+        toast.error('Erro ao carregar dados de conexão');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchObsConfig();
+  }, []);
+
+  const streamPassword = obsConfig?.fmle_password || '';
 
   // Dados de conexão FTP
   const ftpData = {
     servidor: 'stmv1.udicast.com',
     usuario: userLogin,
-    senha: userPassword, // Usar senha do usuário
+    senha: streamPassword, // Usar senha do usuário
     porta: '21'
   };
 
@@ -27,7 +56,7 @@ const DadosConexao: React.FC = () => {
     aplicacao: userLogin,
     rtmpUrl: `rtmp://stmv1.udicast.com:1935/${userLogin}`,
     usuario: userLogin,
-    senha: userPassword, // Senha do usuário
+    senha: streamPassword, // Senha do usuário
     stream: 'live',
     bitrate: user?.bitrate || 2500,
     profileFmleUrl: '/api/dados-conexao/fmle-profile' // URL para download do profile FMLE personalizado
