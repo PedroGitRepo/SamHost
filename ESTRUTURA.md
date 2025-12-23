@@ -61,7 +61,7 @@ Este projeto é um sistema completo de gerenciamento de streaming com integraç�
 #           └── video.mp4
 #
 # Configurações do Wowza:
-# /usr/local/WowzaStreamingEngine-4.8.0/conf/
+# /usr/local/WowzaStreamingEngine-4.9.6+3/conf/
 #   ├── {usuario1}/
 #   │   ├── Application.xml
 #   │   ├── aliasmap.play.txt

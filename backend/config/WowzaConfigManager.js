@@ -2,7 +2,7 @@ const db = require('./database');
 
 class WowzaConfigManager {
     constructor() {
-        this.wowzaBasePath = '/usr/local/WowzaStreamingEngine-4.8.0';
+        this.wowzaBasePath = '/usr/local/WowzaStreamingEngine-4.9.6+3';
         this.confPath = `${this.wowzaBasePath}/conf`;
         this.streamingBasePath = '/home/streaming';
     }
@@ -85,7 +85,7 @@ class WowzaConfigManager {
         return folderPath;
     }
 
-    // Criar diretório de configuração: /usr/local/WowzaStreamingEngine-4.8.0/conf/[usuario]/
+    // Criar diretório de configuração: /usr/local/WowzaStreamingEngine-4.9.6+3/conf/[usuario]/
     async createUserWowzaConfig(serverId, userLogin, userConfig) {
         const SSHManager = require('./SSHManager');
         const userConfPath = `${this.confPath}/${userLogin}`;

@@ -38,7 +38,7 @@ router.get('/status', authMiddleware, async (req, res) => {
             smil_exists: smilExists,
             paths: {
                 streaming_base: `/home/streaming/${userLogin}`,
-                wowza_config: `/usr/local/WowzaStreamingEngine-4.8.0/conf/${userLogin}`,
+                wowza_config: `/usr/local/WowzaStreamingEngine-4.9.6+3/conf/${userLogin}`,
                 recordings: `/home/streaming/${userLogin}/recordings`,
                 smil_file: `/home/streaming/${userLogin}/playlists_agendamentos.smil`,
                 ftpquota: `/home/streaming/${userLogin}/.ftpquota`
@@ -282,7 +282,7 @@ router.get('/urls/:folderName/:fileName', authMiddleware, async (req, res) => {
             structure_info: {
                 streaming_path: `/home/streaming/${userLogin}`,
                 wowza_app: userLogin,
-                wowza_config: `/usr/local/WowzaStreamingEngine-4.8.0/conf/${userLogin}`
+                wowza_config: `/usr/local/WowzaStreamingEngine-4.9.6+3/conf/${userLogin}`
             }
         });
 

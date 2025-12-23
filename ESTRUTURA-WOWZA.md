@@ -28,7 +28,7 @@
 
 ### Configurações do Wowza
 ```bash
-/usr/local/WowzaStreamingEngine-4.8.0/conf/
+/usr/local/WowzaStreamingEngine-4.9.6+3/conf/
 ├── {usuario1}/
 │   ├── Application.xml
 │   ├── aliasmap.play.txt
