@@ -93,7 +93,7 @@ const IFrameVideoPlayer: React.FC<IFrameVideoPlayerProps> = ({
   // Função para construir URL de playlist M3U8 usando domínio do Wowza
   const buildPlaylistUrl = (playlistId: string, userLogin: string) => {
     // SEMPRE usar domínio do Wowza
-    const wowzaDomain = 'stmv1.udicast.com';
+    const wowzaDomain = 'stmv20.samcast.com.br';
     return `https://${wowzaDomain}/${userLogin}/${userLogin}/playlist.m3u8`;
   };
 

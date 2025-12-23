@@ -39,7 +39,7 @@ const DadosConexao: React.FC = () => {
 
   // Dados de conexão FTP
   const ftpData = {
-    servidor: 'stmv1.udicast.com',
+    servidor: 'stmv20.samcast.com.br',
     usuario: userLogin,
     senha: streamPassword, // Usar senha do usuário
     porta: '21'
@@ -47,10 +47,10 @@ const DadosConexao: React.FC = () => {
 
   // Dados de streaming ao vivo (FMS)
   const streamingData = {
-    servidor: 'stmv1.udicast.com',
+    servidor: 'stmv20.samcast.com.br',
     porta: '1935',
     aplicacao: userLogin,
-    rtmpUrl: `rtmp://stmv1.udicast.com:1935/${userLogin}`,
+    rtmpUrl: `rtmp://stmv20.samcast.com.br:1935/${userLogin}`,
     usuario: userLogin,
     senha: streamPassword, // Senha do usuário
     stream: 'live',
@@ -310,7 +310,7 @@ const DadosConexao: React.FC = () => {
             <h3 className="text-green-900 font-medium mb-2">💡 Como usar os dados de conexão</h3>
             <ul className="text-green-800 text-sm space-y-1">
               <li>• <strong>Streaming Ao Vivo (FMS):</strong> Use para softwares como OBS, XSplit, FMLE</li>
-              <li>• <strong>RTMP URL:</strong> rtmp://stmv1.udicast.com:1935/{userLogin}</li>
+              <li>• <strong>RTMP URL:</strong> rtmp://stmv20.samcast.com.br:1935/{userLogin}</li>
               <li>• <strong>Stream Name:</strong> live</li>
               <li>• <strong>Bitrate Máximo:</strong> {user?.bitrate || 2500} kbps (video + audio)</li>
               <li>• <strong>Profile FMLE:</strong> Baixe o arquivo de configuração para Flash Media Live Encoder</li>

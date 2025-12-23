@@ -549,7 +549,7 @@ const GerenciarVideos: React.FC = () => {
       
       const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');
       // SEMPRE usar domínio do Wowza, NUNCA o domínio da aplicação
-      const domain = 'stmv1.udicast.com';
+      const domain = 'stmv20.samcast.com.br';
       
       return `https://${domain}:1443/play.php?login=${userLogin}&video=${folderName}/${finalFileName}`;
     }

@@ -69,16 +69,16 @@ Após o deploy, o sistema estará disponível em:
 - **Backend API:** http://novo.samcast.com.br:3001/api
 - **Health Check:** http://novo.samcast.com.br:3001/api/health
 - **Player iFrame:** http://novo.samcast.com.br:3001/api/player-port/iframe
-- **Streaming RTMP:** rtmp://stmv1.udicast.com:1935/samhost
-- **Streaming HLS OBS:** http://stmv1.udicast.com:1935/samhost/{usuario}_live/playlist.m3u8
-- **Streaming HLS SMIL:** http://stmv1.udicast.com:1935/samhost/smil:playlists_agendamentos.smil/playlist.m3u8
-- **Streaming HLS HTTP:** http://stmv1.udicast.com/samhost/smil:playlists_agendamentos.smil/playlist.m3u8
-- **Streaming DASH OBS:** http://stmv1.udicast.com:1935/samhost/{usuario}_live/manifest.mpd
-- **Streaming DASH SMIL:** http://stmv1.udicast.com:1935/samhost/smil:playlists_agendamentos.smil/manifest.mpd
-- **Streaming RTSP OBS:** rtsp://stmv1.udicast.com:554/samhost/{usuario}_live
-- **Streaming RTSP SMIL:** rtsp://stmv1.udicast.com:554/samhost/smil:playlists_agendamentos.smil
-- **Streaming RTMP SMIL:** rtmp://stmv1.udicast.com:1935/samhost/smil:playlists_agendamentos.smil
-- **Vídeos VOD:** http://stmv1.udicast.com:1935/vod/_definst_/mp4:{usuario}/{pasta}/{arquivo}/playlist.m3u8
+- **Streaming RTMP:** rtmp://stmv20.samcast.com.br:1935/samhost
+- **Streaming HLS OBS:** http://stmv20.samcast.com.br:1935/samhost/{usuario}_live/playlist.m3u8
+- **Streaming HLS SMIL:** http://stmv20.samcast.com.br:1935/samhost/smil:playlists_agendamentos.smil/playlist.m3u8
+- **Streaming HLS HTTP:** http://stmv20.samcast.com.br/samhost/smil:playlists_agendamentos.smil/playlist.m3u8
+- **Streaming DASH OBS:** http://stmv20.samcast.com.br:1935/samhost/{usuario}_live/manifest.mpd
+- **Streaming DASH SMIL:** http://stmv20.samcast.com.br:1935/samhost/smil:playlists_agendamentos.smil/manifest.mpd
+- **Streaming RTSP OBS:** rtsp://stmv20.samcast.com.br:554/samhost/{usuario}_live
+- **Streaming RTSP SMIL:** rtsp://stmv20.samcast.com.br:554/samhost/smil:playlists_agendamentos.smil
+- **Streaming RTMP SMIL:** rtmp://stmv20.samcast.com.br:1935/samhost/smil:playlists_agendamentos.smil
+- **Vídeos VOD:** http://stmv20.samcast.com.br:1935/vod/_definst_/mp4:{usuario}/{pasta}/{arquivo}/playlist.m3u8
 - **Aplicação Wowza:** samhost (aplicação principal)
 
 ### Verificar Status

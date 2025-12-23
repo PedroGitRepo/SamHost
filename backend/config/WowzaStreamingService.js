@@ -108,10 +108,10 @@ class WowzaStreamingService {
         success: true,
         streamId,
         data: {
-          rtmpUrl: `rtmp://stmv1.udicast.com:1935/${userLogin}`,
+          rtmpUrl: `rtmp://stmv20.samcast.com.br:1935/${userLogin}`,
           streamName: userLogin,
-          hlsUrl: `http://stmv1.udicast.com:80/${userLogin}/${userLogin}/playlist.m3u8`,
-          smilUrl: `http://stmv1.udicast.com:80/${userLogin}/smil:${smilFile}/playlist.m3u8`,
+          hlsUrl: `http://stmv20.samcast.com.br:80/${userLogin}/${userLogin}/playlist.m3u8`,
+          smilUrl: `http://stmv20.samcast.com.br:80/${userLogin}/smil:${smilFile}/playlist.m3u8`,
           bitrate: userConfig.bitrate || 2500
         }
       };
@@ -853,9 +853,9 @@ class WowzaStreamingService {
           success: true,
           message: 'Streaming iniciado com sucesso',
           urls: {
-            hls: `https://stmv1.udicast.com/${userLogin}/smil:${smilFileName}/playlist.m3u8`,
-            rtmp: `rtmp://stmv1.udicast.com:1935/${userLogin}/smil:${smilFileName}`,
-            rtsp: `rtsp://stmv1.udicast.com:554/${userLogin}/smil:${smilFileName}`
+            hls: `https://stmv20.samcast.com.br/${userLogin}/smil:${smilFileName}/playlist.m3u8`,
+            rtmp: `rtmp://stmv20.samcast.com.br:1935/${userLogin}/smil:${smilFileName}`,
+            rtsp: `rtsp://stmv20.samcast.com.br:554/${userLogin}/smil:${smilFileName}`
           }
         };
       } else {

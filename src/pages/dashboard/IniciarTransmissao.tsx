@@ -130,7 +130,7 @@ const IniciarTransmissao: React.FC = () => {
                 data_inicio: new Date().toISOString(),
                 data_fim: '',
                 tipo: 'obs',
-                servidor_stm: `https://stmv1.udicast.com/${userLogin}/${userLogin}_live/playlist.m3u8`,
+                servidor_stm: `https://stmv20.samcast.com.br/${userLogin}/${userLogin}_live/playlist.m3u8`,
                 servidor_live: 'OBS Studio',
                 status: '1',
                 data_inicio_formatted: new Date().toLocaleString(),

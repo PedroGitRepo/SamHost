@@ -101,10 +101,10 @@ pm2 startup
 
 ### URLs de Streaming
 - **RTMP:** rtmp://novo.samcast.com.br:1935/samhost
-- **HLS:** http://stmv1.udicast.com:80/samhost/{usuario}_live/playlist.m3u8
-- **HLS Seguro:** https://stmv1.udicast.com:443/samhost/{usuario}_live/playlist.m3u8
-- **DASH:** http://stmv1.udicast.com:80/samhost/{usuario}_live/manifest.mpd
-- **RTSP:** rtsp://stmv1.udicast.com:554/samhost/{usuario}_live
+- **HLS:** http://stmv20.samcast.com.br:80/samhost/{usuario}_live/playlist.m3u8
+- **HLS Seguro:** https://stmv20.samcast.com.br:443/samhost/{usuario}_live/playlist.m3u8
+- **DASH:** http://stmv20.samcast.com.br:80/samhost/{usuario}_live/manifest.mpd
+- **RTSP:** rtsp://stmv20.samcast.com.br:554/samhost/{usuario}_live
 
 ## 📊 Monitoramento
 

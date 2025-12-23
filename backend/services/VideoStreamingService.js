@@ -250,7 +250,7 @@ class VideoStreamingService {
 
     // Gerar URLs de streaming otimizadas
     generateStreamingUrls(userLogin, folderName, fileName, serverId = null) {
-        const wowzaHost = 'stmv1.udicast.com'; // SEMPRE usar domínio do Wowza
+        const wowzaHost = 'stmv20.samcast.com.br'; // SEMPRE usar domínio do Wowza
         const wowzaUser = 'admin';
         const wowzaPassword = 'FK38Ca2SuE6jvJXed97VMn';
         

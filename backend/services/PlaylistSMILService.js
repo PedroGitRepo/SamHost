@@ -487,10 +487,10 @@ class PlaylistSMILService {
                 playlist_name: playlist.nome,
                 videos_count: videoRows.length,
                 total_videos: smilContent ? smilContent.split('<video').length - 1 : 0,
-                playlist_url_http: `https://stmv1.udicast.com/${userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8`,
-                playlist_rtmp_url: `rtmp://stmv1.udicast.com:1935/${userLogin}/smil:playlists_agendamentos.smil`,
-                playlist_rtsp_url: `rtsp://stmv1.udicast.com:554/${userLogin}/smil:playlists_agendamentos.smil`,
-                playlist_dash_url: `https://stmv1.udicast.com/${userLogin}/smil:playlists_agendamentos.smil/manifest.mpd`
+                playlist_url_http: `https://stmv20.samcast.com.br/${userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8`,
+                playlist_rtmp_url: `rtmp://stmv20.samcast.com.br:1935/${userLogin}/smil:playlists_agendamentos.smil`,
+                playlist_rtsp_url: `rtsp://stmv20.samcast.com.br:554/${userLogin}/smil:playlists_agendamentos.smil`,
+                playlist_dash_url: `https://stmv20.samcast.com.br/${userLogin}/smil:playlists_agendamentos.smil/manifest.mpd`
             };
 
         } catch (error) {

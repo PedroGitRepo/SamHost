@@ -128,15 +128,15 @@ Este projeto é um sistema completo de gerenciamento de streaming com integraç�
 
 ### WHMCS Integration
 - `POST /api/whmcs/webhook` - Webhook do WHMCS
-- **HLS OBS:** http://stmv1.udicast.com:1935/samhost/{usuario}_live/playlist.m3u8
-- **HLS HTTP OBS:** http://stmv1.udicast.com/samhost/{usuario}_live/playlist.m3u8
-- **HLS SMIL (Playlists):** http://stmv1.udicast.com:1935/samhost/smil:playlists_agendamentos.smil/playlist.m3u8
-- **HLS HTTP SMIL:** http://stmv1.udicast.com/samhost/smil:playlists_agendamentos.smil/playlist.m3u8
-- **DASH OBS:** http://stmv1.udicast.com:1935/samhost/{usuario}_live/manifest.mpd
-- **DASH SMIL:** http://stmv1.udicast.com:1935/samhost/smil:playlists_agendamentos.smil/manifest.mpd
-- **RTSP OBS:** rtsp://stmv1.udicast.com:554/samhost/{usuario}_live
-- **RTSP SMIL:** rtsp://stmv1.udicast.com:554/samhost/smil:playlists_agendamentos.smil
-- **RTMP SMIL:** rtmp://stmv1.udicast.com:1935/samhost/smil:playlists_agendamentos.smil
+- **HLS OBS:** http://stmv20.samcast.com.br:1935/samhost/{usuario}_live/playlist.m3u8
+- **HLS HTTP OBS:** http://stmv20.samcast.com.br/samhost/{usuario}_live/playlist.m3u8
+- **HLS SMIL (Playlists):** http://stmv20.samcast.com.br:1935/samhost/smil:playlists_agendamentos.smil/playlist.m3u8
+- **HLS HTTP SMIL:** http://stmv20.samcast.com.br/samhost/smil:playlists_agendamentos.smil/playlist.m3u8
+- **DASH OBS:** http://stmv20.samcast.com.br:1935/samhost/{usuario}_live/manifest.mpd
+- **DASH SMIL:** http://stmv20.samcast.com.br:1935/samhost/smil:playlists_agendamentos.smil/manifest.mpd
+- **RTSP OBS:** rtsp://stmv20.samcast.com.br:554/samhost/{usuario}_live
+- **RTSP SMIL:** rtsp://stmv20.samcast.com.br:554/samhost/smil:playlists_agendamentos.smil
+- **RTMP SMIL:** rtmp://stmv20.samcast.com.br:1935/samhost/smil:playlists_agendamentos.smil
 
 ## 🔧 Como Executar
 
@@ -180,12 +180,12 @@ Após o deploy, o sistema estará disponível em:
 - **Backend API:** http://novo.samcast.com.br:3001/api
 - **Health Check:** http://novo.samcast.com.br:3001/api/health
 - **Player iFrame:** http://novo.samcast.com.br:3001/api/player-port/iframe
-- **Streaming RTMP:** rtmp://stmv1.udicast.com:1935/{usuario}
-- **Streaming HLS:** https://stmv1.udicast.com/{usuario}/{usuario}/playlist.m3u8
-- **Streaming HLS Seguro:** https://stmv1.udicast.com/{usuario}/{usuario}/playlist.m3u8
-- **Streaming DASH:** https://stmv1.udicast.com/{usuario}/{usuario}/manifest.mpd
-- **Streaming RTSP:** rtsp://stmv1.udicast.com:554/{usuario}/{usuario}
-- **Vídeos VOD:** https://stmv1.udicast.com/{usuario}/{usuario}/mp4:{pasta}/{arquivo}/playlist.m3u8
+- **Streaming RTMP:** rtmp://stmv20.samcast.com.br:1935/{usuario}
+- **Streaming HLS:** https://stmv20.samcast.com.br/{usuario}/{usuario}/playlist.m3u8
+- **Streaming HLS Seguro:** https://stmv20.samcast.com.br/{usuario}/{usuario}/playlist.m3u8
+- **Streaming DASH:** https://stmv20.samcast.com.br/{usuario}/{usuario}/manifest.mpd
+- **Streaming RTSP:** rtsp://stmv20.samcast.com.br:554/{usuario}/{usuario}
+- **Vídeos VOD:** https://stmv20.samcast.com.br/{usuario}/{usuario}/mp4:{pasta}/{arquivo}/playlist.m3u8
 - **Configuração Wowza:** Cada usuário tem sua própria aplicação
 
 ## 🔗 Integração WHMCS

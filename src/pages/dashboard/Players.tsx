@@ -141,13 +141,13 @@ const Players: React.FC = () => {
  const getActiveStreamUrl = () => {
   if (playlistTransmissionActive) {
     // Priorizar playlist se estiver ativa
-    return `https://stmv1.udicast.com/${userLogin}/${userLogin}/playlist.m3u8`;
+    return `https://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`;
   } else if (obsStreamActive) {
-    return `https://stmv1.udicast.com/${userLogin}/${userLogin}_live/playlist.m3u8`;
+    return `https://stmv20.samcast.com.br/${userLogin}/${userLogin}_live/playlist.m3u8`;
   } else if (sampleVideos.length > 0) {
     return getVideoUrl(sampleVideos[0].url, userLogin); // ✅ Passar userLogin
   }
-  return `https://stmv1.udicast.com/${userLogin}/${userLogin}_live/playlist.m3u8`;
+  return `https://stmv20.samcast.com.br/${userLogin}/${userLogin}_live/playlist.m3u8`;
 };
 
 

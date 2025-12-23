@@ -733,7 +733,7 @@ const Playlists: React.FC = () => {
       const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');
 
       // SEMPRE usar domínio do Wowza
-      const domain = 'stmv1.udicast.com';
+      const domain = 'stmv20.samcast.com.br';
       const externalUrl = `https://${domain}:1443/play.php?login=${userLogin}&video=${folderName}/${finalFileName}`;
 
       window.open(externalUrl, '_blank');
@@ -828,7 +828,7 @@ const Playlists: React.FC = () => {
 
           <div className="mt-4 p-3 bg-green-100 rounded-md">
             <p className="text-green-800 text-sm">
-              <strong>📺 URL de Transmissão:</strong> https://stmv1.udicast.com/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8
+              <strong>📺 URL de Transmissão:</strong> https://stmv20.samcast.com.br/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8
             </p>
           </div>
         </div>
@@ -1244,7 +1244,7 @@ const Playlists: React.FC = () => {
                   <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                     <p className="text-sm font-medium text-gray-700 mb-2">Preview do Logo:</p>
                     <img
-                      src={`https://stmv1.udicast.com/content${logos.find(l => l.id === selectedLogoId)?.url}`}
+                      src={`https://stmv20.samcast.com.br/content${logos.find(l => l.id === selectedLogoId)?.url}`}
                       alt="Preview"
                       className="max-h-20 max-w-full object-contain"
                       style={{ opacity: logoOpacity / 100 }}
@@ -1382,7 +1382,7 @@ const Playlists: React.FC = () => {
             {/* Player */}
             <div className="w-full h-full p-4 pt-16">
               <ClapprStreamingPlayer
-                src={`https://stmv1.udicast.com/${userLogin}/${userLogin}/playlist.m3u8`}
+                src={`https://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`}
                 title={`📺 ${selectedPlaylist?.nome || 'Transmissão'}`}
                 isLive={true}
                 autoplay={true}

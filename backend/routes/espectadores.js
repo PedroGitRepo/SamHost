@@ -168,7 +168,7 @@ router.get('/tempo-real', authMiddleware, async (req, res) => {
       espectadores,
       timestamp: new Date().toISOString(),
       wowza_info: {
-        domain: 'stmv1.udicast.com',
+        domain: 'stmv20.samcast.com.br',
         ports: {
           rtmp: 1935,
           hls: 80,

@@ -96,7 +96,7 @@ const AppMultiplataforma: React.FC = () => {
   });
 
   const userLogin = user?.usuario || (user?.email ? user.email.split('@')[0] : `user_${user?.id || 'usuario'}`);
-  const playerUrl = `https://stmv1.udicast.com:1443/play.php?login=${userLogin}&video=default/live.mp4`;
+  const playerUrl = `https://stmv20.samcast.com.br:1443/play.php?login=${userLogin}&video=default/live.mp4`;
 
   useEffect(() => {
     loadAppData();
@@ -342,7 +342,7 @@ const AppMultiplataforma: React.FC = () => {
     };
 
     return `<a href="${playerUrl}" target="_blank">
-  <img src="http://stmv1.udicast.com/app-multi-plataforma/${imageMap[platform as keyof typeof imageMap]}" width="150" height="48" alt="Instalar App ${platform}" />
+  <img src="http://stmv20.samcast.com.br/app-multi-plataforma/${imageMap[platform as keyof typeof imageMap]}" width="150" height="48" alt="Instalar App ${platform}" />
 </a>`;
   };
 
@@ -442,7 +442,7 @@ const AppMultiplataforma: React.FC = () => {
                       </button>
                     </div>
                     <img 
-                      src="http://stmv1.udicast.com/app-multi-plataforma/img-instalar-app-android.png" 
+                      src="http://stmv20.samcast.com.br/app-multi-plataforma/img-instalar-app-android.png" 
                       alt="Instalar Android" 
                       className="w-32 h-auto mb-2"
                     />
@@ -469,7 +469,7 @@ const AppMultiplataforma: React.FC = () => {
                       </button>
                     </div>
                     <img 
-                      src="http://stmv1.udicast.com/app-multi-plataforma/img-instalar-app-iphone.png" 
+                      src="http://stmv20.samcast.com.br/app-multi-plataforma/img-instalar-app-iphone.png" 
                       alt="Instalar iOS" 
                       className="w-32 h-auto mb-2"
                     />

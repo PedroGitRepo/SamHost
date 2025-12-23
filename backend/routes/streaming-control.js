@@ -1252,7 +1252,7 @@ router.post('/start-recording', async (req, res) => {
             [serverId]
         );
 
-        const wowzaHost = serverRows.length > 0 ? (serverRows[0].dominio || serverRows[0].ip) : 'stmv1.udicast.com';
+        const wowzaHost = serverRows.length > 0 ? (serverRows[0].dominio || serverRows[0].ip) : 'stmv20.samcast.com.br';
         const streamUrl = `https://${wowzaHost}/${userLogin}/${userLogin}/playlist.m3u8`;
 
         // Criar pasta de gravações no servidor remoto via SSH
@@ -1515,7 +1515,7 @@ router.post('/diagnostics', async (req, res) => {
         }
 
         if (testType === 'all' || testType === 'm3u8') {
-            const wowzaHost = 'stmv1.udicast.com';
+            const wowzaHost = 'stmv20.samcast.com.br';
             const m3u8Url = `https://${wowzaHost}/${userLogin}/${userLogin}/playlist.m3u8`;
 
             results.push({
@@ -1676,7 +1676,7 @@ router.get('/source-urls', async (req, res) => {
             [userId]
         );
 
-        let wowzaHost = 'stmv1.udicast.com';
+        let wowzaHost = 'stmv20.samcast.com.br';
         let rtmpPort = 1935;
 
         if (streamingRows.length > 0) {
@@ -1688,7 +1688,7 @@ router.get('/source-urls', async (req, res) => {
 
             if (serverRows.length > 0) {
                 const server = serverRows[0];
-                wowzaHost = server.dominio || server.ip || 'stmv1.udicast.com';
+                wowzaHost = server.dominio || server.ip || 'stmv20.samcast.com.br';
             }
         }
 
@@ -1711,7 +1711,7 @@ router.get('/source-urls', async (req, res) => {
         console.error('Erro ao obter URLs de origem:', error);
         const userId = req.user?.id || req.user?.codigo;
         const userLogin = req.user?.usuario || `user_${userId}`;
-        const wowzaHost = 'stmv1.udicast.com';
+        const wowzaHost = 'stmv20.samcast.com.br';
 
         // Retornar URLs padrão em caso de erro
         res.json({

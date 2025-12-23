@@ -819,7 +819,7 @@ class WowzaConfigManager {
 
     // Construir URLs corretas para nova estrutura
     buildVideoUrls(userLogin, folderName, fileName, serverId = null) {
-        const wowzaHost = 'stmv1.udicast.com'; // SEMPRE usar domínio do Wowza
+        const wowzaHost = 'stmv20.samcast.com.br'; // SEMPRE usar domínio do Wowza
 
         // Garantir que arquivo é MP4
         const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');
@@ -867,7 +867,7 @@ class WowzaConfigManager {
 
     // Construir URLs de transmissão ao vivo
     buildLiveStreamUrls(userLogin, serverId = null) {
-        const wowzaHost = 'stmv1.udicast.com';
+        const wowzaHost = 'stmv20.samcast.com.br';
 
         return {
             // URL RTMP para OBS

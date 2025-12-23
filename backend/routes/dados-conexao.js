@@ -153,7 +153,7 @@ router.get('/obs-config', authMiddleware, async (req, res) => {
 
     // Configurar URLs baseadas no ambiente
     // Usar domínio oficial do servidor Wowza
-    const wowzaHost = 'stmv1.udicast.com';
+    const wowzaHost = 'stmv20.samcast.com.br';
 
     res.json({
       success: true,
@@ -272,7 +272,7 @@ router.get('/fmle-profile', authMiddleware, async (req, res) => {
     
     <Output>
       <Format>FLV</Format>
-      <URL>rtmp://stmv1.udicast.com:1935/${userLogin}</URL>
+      <URL>rtmp://stmv20.samcast.com.br:1935/${userLogin}</URL>
       <Stream>live</Stream>
       <Username>${userLogin}</Username>
       <Password>${userPassword}</Password>

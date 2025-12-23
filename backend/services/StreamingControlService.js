@@ -473,7 +473,7 @@ class StreamingControlService {
             const { streaming, server } = await this.getStreamingData(login);
 
             // Usar domínio correto do Wowza e credenciais
-            const wowzaHost = 'stmv1.udicast.com';
+            const wowzaHost = 'stmv20.samcast.com.br';
             const wowzaUser = 'admin';
             const wowzaPassword = 'FK38Ca2SuE6jvJXed97VMn';
 

@@ -181,15 +181,15 @@ app.use('/content', async (req, res, next) => {
         if (serverRows.length > 0) {
           const server = serverRows[0];
           // SEMPRE usar domínio, nunca IP
-          wowzaHost = 'stmv1.udicast.com';
+          wowzaHost = 'stmv20.samcast.com.br';
         } else {
-          wowzaHost = 'stmv1.udicast.com';
+          wowzaHost = 'stmv20.samcast.com.br';
         }
       } else {
-        wowzaHost = 'stmv1.udicast.com';
+        wowzaHost = 'stmv20.samcast.com.br';
       }
     } catch {
-      wowzaHost = 'stmv1.udicast.com';
+      wowzaHost = 'stmv20.samcast.com.br';
     }
 
     const fileExtension = path.extname(fileName).toLowerCase();
@@ -328,15 +328,15 @@ app.get('/api/wowza/video-url/:userLogin/:folderName/:fileName', async (req, res
         if (serverRows.length > 0) {
           const server = serverRows[0];
           // SEMPRE usar domínio, nunca IP
-          wowzaHost = 'stmv1.udicast.com';
+          wowzaHost = 'stmv20.samcast.com.br';
         } else {
-          wowzaHost = 'stmv1.udicast.com';
+          wowzaHost = 'stmv20.samcast.com.br';
         }
       } else {
-        wowzaHost = 'stmv1.udicast.com';
+        wowzaHost = 'stmv20.samcast.com.br';
       }
     } catch {
-      wowzaHost = 'stmv1.udicast.com';
+      wowzaHost = 'stmv20.samcast.com.br';
     }
 
     const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');

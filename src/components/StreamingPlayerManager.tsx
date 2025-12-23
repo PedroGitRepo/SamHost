@@ -109,12 +109,12 @@ const StreamingPlayerManager: React.FC<StreamingPlayerManagerProps> = ({
           
           if (data.stream_type === 'playlist' && data.transmission) {
             // Para playlist, usar SMIL conforme PHP: smil:transcoder.smil ou smil:playlists_agendamentos.smil
-            streamUrl = `https://stmv1.udicast.com/${userLogin}/${userLogin}/playlist.m3u8`;
+            streamUrl = `https://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`;
             title = `📺 Playlist: ${data.transmission.playlist_nome || data.transmission.titulo}`;
             console.log('🎵 Stream de playlist detectado:', streamUrl);
           } else if (data.stream_type === 'obs' && data.obs_stream?.is_live) {
             // Para OBS, usar formato padrão: servidor/login/login/playlist.m3u8
-            streamUrl = `https://stmv1.udicast.com/${userLogin}/${userLogin}_live/playlist.m3u8`;
+            streamUrl = `https://stmv20.samcast.com.br/${userLogin}/${userLogin}_live/playlist.m3u8`;
             title = `📡 OBS: ${data.obs_stream.streamName || `${userLogin}_live`}`;
             console.log('📡 Stream OBS detectado:', streamUrl);
           }
@@ -226,7 +226,7 @@ const StreamingPlayerManager: React.FC<StreamingPlayerManagerProps> = ({
 
   const buildStreamUrl = (baseUrl: string, vod?: string) => {
     // Seguir lógica do PHP para construir URLs
-    const servidor = 'stmv1.udicast.com';
+    const servidor = 'stmv20.samcast.com.br';
     
     if (vod) {
       // VOD específico: https://servidor/login/login/mp4:vod/playlist.m3u8
@@ -392,7 +392,7 @@ const StreamingPlayerManager: React.FC<StreamingPlayerManagerProps> = ({
             {connectionError ? 'Erro de conexão com o servidor' : 'Inicie uma transmissão para visualizar aqui'}
           </p>
           <div className="text-sm text-gray-500 space-y-1">
-            <p>Domínio: stmv1.udicast.com</p>
+            <p>Domínio: stmv20.samcast.com.br</p>
             <p>Usuário: {userLogin}</p>
             <p>Verificando streams automaticamente...</p>
           </div>
@@ -679,7 +679,7 @@ const StreamingPlayerManager: React.FC<StreamingPlayerManagerProps> = ({
               </div>
               <div>
                 <span className="text-gray-600">Domínio:</span>
-                <span className="ml-2 font-medium font-mono">stmv1.udicast.com</span>
+                <span className="ml-2 font-medium font-mono">stmv20.samcast.com.br</span>
               </div>
               <div>
                 <span className="text-gray-600">Tipo:</span>
@@ -723,16 +723,16 @@ const StreamingPlayerManager: React.FC<StreamingPlayerManagerProps> = ({
             <div>
               <span className="font-medium text-gray-700">URLs de Streaming:</span>
               <ul className="text-gray-600 mt-1 space-y-1">
-                <li>• <strong>HLS Playlist:</strong> https://stmv1.udicast.com/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8</li>
-                <li>• <strong>HLS OBS:</strong> https://stmv1.udicast.com/{userLogin}/{userLogin}/playlist.m3u8</li>
-                <li>• <strong>RTMP:</strong> rtmp://stmv1.udicast.com:1935/{userLogin}</li>
+                <li>• <strong>HLS Playlist:</strong> https://stmv20.samcast.com.br/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8</li>
+                <li>• <strong>HLS OBS:</strong> https://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8</li>
+                <li>• <strong>RTMP:</strong> rtmp://stmv20.samcast.com.br:1935/{userLogin}</li>
               </ul>
             </div>
             
             <div>
               <span className="font-medium text-gray-700">Configurações Ativas:</span>
               <ul className="text-gray-600 mt-1 space-y-1">
-                <li>• <strong>Domínio:</strong> stmv1.udicast.com</li>
+                <li>• <strong>Domínio:</strong> stmv20.samcast.com.br</li>
                 <li>• <strong>Usuário:</strong> {userLogin}</li>
                 <li>• <strong>Contador:</strong> {enableViewerCounter ? 'Ativo' : 'Inativo'}</li>
                 <li>• <strong>Compartilhamento:</strong> {enableSocialSharing ? 'Ativo' : 'Inativo'}</li>
@@ -750,7 +750,7 @@ const StreamingPlayerManager: React.FC<StreamingPlayerManagerProps> = ({
           <div>
             <h3 className="text-blue-900 font-medium mb-2">🎥 Sistema de Transmissão Atualizado</h3>
             <ul className="text-blue-800 text-sm space-y-1">
-              <li>• <strong>Domínio Oficial:</strong> stmv1.udicast.com (seguindo padrão de referência)</li>
+              <li>• <strong>Domínio Oficial:</strong> stmv20.samcast.com.br (seguindo padrão de referência)</li>
               <li>• <strong>Detecção Automática:</strong> Verifica se stream está realmente funcionando</li>
               <li>• <strong>Sem Sinal:</strong> Mostra tela de "sem sinal" quando stream está offline</li>
               <li>• <strong>Auto-reload:</strong> Recarrega automaticamente a cada 10 segundos quando offline</li>
@@ -775,14 +775,14 @@ const StreamingPlayerManager: React.FC<StreamingPlayerManagerProps> = ({
               </p>
               <ul className="text-yellow-800 text-sm space-y-1">
                 <li>• <strong>Iniciar uma Playlist:</strong> Vá em "Playlists" e clique em "Transmitir Playlist"</li>
-                <li>• <strong>Transmitir via OBS:</strong> Configure OBS com RTMP: rtmp://stmv1.udicast.com:1935/{userLogin}</li>
+                <li>• <strong>Transmitir via OBS:</strong> Configure OBS com RTMP: rtmp://stmv20.samcast.com.br:1935/{userLogin}</li>
                 <li>• <strong>Stream Key:</strong> {userLogin}_live</li>
                 <li>• <strong>Usar Relay RTMP:</strong> Configure um relay 24/7 em "Relay RTMP"</li>
               </ul>
               <div className="mt-3 p-2 bg-yellow-100 rounded text-xs">
                 <p><strong>URLs de teste:</strong></p>
-                <p>• Playlist: https://stmv1.udicast.com/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8</p>
-                <p>• OBS: https://stmv1.udicast.com/{userLogin}/{userLogin}/playlist.m3u8</p>
+                <p>• Playlist: https://stmv20.samcast.com.br/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8</p>
+                <p>• OBS: https://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8</p>
               </div>
             </div>
           </div>

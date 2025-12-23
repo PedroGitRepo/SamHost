@@ -19,7 +19,7 @@ router.get('/iframe', async (req, res) => {
     // Construir URL baseado nos parâmetros (seguindo lógica do video.php)
     if (vodPath) {
       // VOD específico
-     const wowzaHost = 'stmv1.udicast.com'; // SEMPRE usar domínio
+     const wowzaHost = 'stmv20.samcast.com.br'; // SEMPRE usar domínio
       
       // Garantir que o arquivo é MP4
       const vodPathParts = vodPath.split('/');
@@ -36,7 +36,7 @@ router.get('/iframe', async (req, res) => {
       isLive = false;
     } else if (stream) {
       // Stream ao vivo
-      const wowzaHost = 'stmv1.udicast.com';
+      const wowzaHost = 'stmv20.samcast.com.br';
       videoUrl = `https://${wowzaHost}/${stream.split('_')[0]}/${stream}/playlist.m3u8`;
       title = `Stream: ${stream}`;
       isLive = true;
@@ -71,7 +71,7 @@ router.get('/iframe', async (req, res) => {
                 const fileName = pathParts[2];
                 const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');
                 
-                const wowzaHost = 'stmv1.udicast.com';
+                const wowzaHost = 'stmv20.samcast.com.br';
                 videoUrl = `https://${wowzaHost}/vod/_definst_/mp4:${userPath}/${folderName}/${finalFileName}/playlist.m3u8`;
                 videoUrl = `/content/${videoPath}`;
               }
@@ -108,7 +108,7 @@ router.get('/iframe', async (req, res) => {
               const fileName = pathParts[2];
               const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');
               
-              const wowzaHost = 'stmv1.udicast.com';
+              const wowzaHost = 'stmv20.samcast.com.br';
               videoUrl = `https://${wowzaHost}/vod/_definst_/mp4:${userPath}/${folderName}/${finalFileName}/playlist.m3u8`;
             } else {
               videoUrl = `/content/${videoPath}`;
@@ -124,7 +124,7 @@ router.get('/iframe', async (req, res) => {
       }
     } else if (userLogin && userLogin !== 'usuario') {
       // Stream padrão do usuário
-      const wowzaHost = 'stmv1.udicast.com';
+      const wowzaHost = 'stmv20.samcast.com.br';
       videoUrl = `https://${wowzaHost}/${userLogin}/${userLogin}_live/playlist.m3u8`;
       title = `Stream: ${userLogin}`;
       isLive = true;
@@ -402,7 +402,7 @@ router.get('/social', async (req, res) => {
       return res.status(400).send('Stream parameter required');
     }
     
-    const videoUrl = `https://stmv1.udicast.com/${userLogin}/${stream}/playlist.m3u8`;
+    const videoUrl = `https://stmv20.samcast.com.br/${userLogin}/${stream}/playlist.m3u8`;
     
     const socialHTML = `
 <!DOCTYPE html>

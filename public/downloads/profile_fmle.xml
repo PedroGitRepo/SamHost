@@ -33,7 +33,7 @@
     
     <Output>
       <Format>FLV</Format>
-      <URL>rtmp://stmv1.udicast.com:1935/[USUARIO]</URL>
+      <URL>rtmp://stmv20.samcast.com.br:1935/[USUARIO]</URL>
       <Stream>live</Stream>
       <Username>[USUARIO]</Username>
       <Password>[SENHA]</Password>

@@ -20,7 +20,7 @@ const GravadorTransmissao: React.FC = () => {
   const [elapsed, setElapsed] = useState(0);
 
   const userLogin = user?.usuario || (user?.email ? user.email.split('@')[0] : 'usuario');
-  const streamUrl = `https://stmv1.udicast.com/${userLogin}/${userLogin}/playlist.m3u8`;
+  const streamUrl = `https://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`;
 
   useEffect(() => {
     checkRecordingStatus();

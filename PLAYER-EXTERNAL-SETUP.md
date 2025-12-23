@@ -109,14 +109,14 @@ https://playerv.novo.samcast.com.br/?login=usuario&player=1
 - `vod` (opcional): Vídeo específico (pasta/arquivo.mp4)
 
 ### URLs de Streaming
-- **Playlist HLS:** `http://stmv1.udicast.com:80/samhost/{usuario}_playlist/playlist.m3u8`
-- **Playlist DASH:** `http://stmv1.udicast.com:80/samhost/{usuario}_playlist/manifest.mpd`
-- **OBS HLS:** `http://stmv1.udicast.com:80/samhost/{usuario}_live/playlist.m3u8`
-- **OBS DASH:** `http://stmv1.udicast.com:80/samhost/{usuario}_live/manifest.mpd`
-- **OBS RTSP:** `rtsp://stmv1.udicast.com:554/samhost/{usuario}_live`
-- **VOD HLS:** `http://stmv1.udicast.com:80/vod/_definst_/mp4:{usuario}/{pasta}/{arquivo}/playlist.m3u8`
-- **VOD DASH:** `http://stmv1.udicast.com:80/vod/_definst_/mp4:{usuario}/{pasta}/{arquivo}/manifest.mpd`
-- **VOD RTSP:** `rtsp://stmv1.udicast.com:554/vod/_definst_/mp4:{usuario}/{pasta}/{arquivo}`
+- **Playlist HLS:** `http://stmv20.samcast.com.br:80/samhost/{usuario}_playlist/playlist.m3u8`
+- **Playlist DASH:** `http://stmv20.samcast.com.br:80/samhost/{usuario}_playlist/manifest.mpd`
+- **OBS HLS:** `http://stmv20.samcast.com.br:80/samhost/{usuario}_live/playlist.m3u8`
+- **OBS DASH:** `http://stmv20.samcast.com.br:80/samhost/{usuario}_live/manifest.mpd`
+- **OBS RTSP:** `rtsp://stmv20.samcast.com.br:554/samhost/{usuario}_live`
+- **VOD HLS:** `http://stmv20.samcast.com.br:80/vod/_definst_/mp4:{usuario}/{pasta}/{arquivo}/playlist.m3u8`
+- **VOD DASH:** `http://stmv20.samcast.com.br:80/vod/_definst_/mp4:{usuario}/{pasta}/{arquivo}/manifest.mpd`
+- **VOD RTSP:** `rtsp://stmv20.samcast.com.br:554/vod/_definst_/mp4:{usuario}/{pasta}/{arquivo}`
 
 ### Exemplos de Uso
 

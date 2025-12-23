@@ -76,7 +76,7 @@ try {
     
     if ($transmission) {
         $userLogin = $user['user_login'];
-        $response['stream_url'] = "https://stmv1.udicast.com/{$userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8";
+        $response['stream_url'] = "https://stmv20.samcast.com.br/{$userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8";
         $response['title'] = $transmission['titulo'];
         $response['playlist_name'] = $transmission['playlist_nome'];
     } else {
@@ -97,7 +97,7 @@ try {
         if ($apiResponse) {
             $obsData = json_decode($apiResponse, true);
             if ($obsData && $obsData['success'] && $obsData['obs_stream']['is_live']) {
-                $obsStreamUrl = "https://stmv1.udicast.com/{$userLogin}/{$userLogin}_live/playlist.m3u8";
+                $obsStreamUrl = "https://stmv20.samcast.com.br/{$userLogin}/{$userLogin}_live/playlist.m3u8";
 
                 $response['has_active_transmission'] = true;
                 $response['transmission_type'] = 'obs';

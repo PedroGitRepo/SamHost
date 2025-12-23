@@ -11,7 +11,7 @@ export interface VideoUrlParts {
 }
 
 export class VideoUrlBuilder {
-  private static readonly WOWZA_DOMAIN = 'stmv1.udicast.com';
+  private static readonly WOWZA_DOMAIN = 'stmv20.samcast.com.br';
   private static readonly PORT = '1443';
   private static readonly HLS_PORT = '80';
   private static readonly HLS_SECURE_PORT = '443';
@@ -74,7 +74,7 @@ export class VideoUrlBuilder {
    */
   private static getDomain(): string {
     // SEMPRE usar o domínio do servidor Wowza, NUNCA o domínio da aplicação
-    return this.WOWZA_DOMAIN; // stmv1.udicast.com
+    return this.WOWZA_DOMAIN; // stmv20.samcast.com.br
   }
 
   /**

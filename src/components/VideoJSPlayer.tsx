@@ -481,7 +481,7 @@ const VideoJSPlayer: React.FC<VideoJSPlayerProps> = ({
       if (src.includes('/playlist/') && src.includes('_playlist.mp4')) {
         // Converter URL de playlist para HLS
         const userLogin = src.split('/')[0];
-        finalSrc = `https://stmv1.udicast.com/${userLogin}/${userLogin}/playlist.m3u8`;
+        finalSrc = `https://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`;
         console.log('🎵 URL de playlist convertida:', finalSrc);
       }
       

@@ -866,7 +866,7 @@ router.get('/content/*', authMiddleware, async (req, res) => {
     const fileName = pathParts[2];
     
     // Buscar servidor do usuário dinamicamente
-    let wowzaHost = 'stmv1.udicast.com'; // Domínio do Wowza
+    let wowzaHost = 'stmv20.samcast.com.br'; // Domínio do Wowza
     let wowzaPort = 6980;
     let wowzaUser = 'admin';
     let wowzaPassword = 'FK38Ca2SuE6jvJXed97VMn';
@@ -890,20 +890,20 @@ router.get('/content/*', authMiddleware, async (req, res) => {
         if (serverRows.length > 0) {
           const server = serverRows[0];
           // SEMPRE usar domínio, nunca IP
-          wowzaHost = 'stmv1.udicast.com'; // Manter domínio do Wowza
+          wowzaHost = 'stmv20.samcast.com.br'; // Manter domínio do Wowza
           wowzaPassword = server.senha_root || wowzaPassword;
           console.log(`✅ Usando servidor dinâmico: ${wowzaHost} (Servidor ID: ${serverId})`);
         } else {
           console.log(`⚠️ Servidor ${serverId} não encontrado, usando padrão`);
-          wowzaHost = 'stmv1.udicast.com';
+          wowzaHost = 'stmv20.samcast.com.br';
         }
       } else {
         console.log(`⚠️ Servidor do usuário ${userLogin} não encontrado, usando padrão`);
-        wowzaHost = 'stmv1.udicast.com';
+        wowzaHost = 'stmv20.samcast.com.br';
       }
     } catch (serverError) {
       console.warn('Erro ao buscar servidor do usuário, usando padrão:', serverError.message);
-      wowzaHost = 'stmv1.udicast.com';
+      wowzaHost = 'stmv20.samcast.com.br';
     }
     
     // Processar nome do arquivo

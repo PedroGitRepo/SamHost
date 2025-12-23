@@ -949,7 +949,7 @@ class VideoSSHManager {
             const fileName = path.basename(finalPath);
             const relativePath = finalPath.replace('/usr/local/WowzaStreamingEngine/content/', '');
             
-            const wowzaHost = 'stmv1.udicast.com'; // SEMPRE usar domínio do Wowza
+            const wowzaHost = 'stmv20.samcast.com.br'; // SEMPRE usar domínio do Wowza
             
             // URL direta do Wowza usando porta 6980 (admin/content)
             const directUrl = `http://${wowzaHost}:6980/content/${relativePath}`;

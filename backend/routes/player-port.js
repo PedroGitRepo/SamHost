@@ -69,7 +69,7 @@ router.get('/iframe', async (req, res) => {
     // Construir URL baseado nos parâmetros
     if (vodPath) {
       // VOD específico
-      const wowzaHost = 'stmv1.udicast.com';
+      const wowzaHost = 'stmv20.samcast.com.br';
 
       // Garantir que o arquivo é MP4
       const vodPathParts = vodPath.split('/');
@@ -95,7 +95,7 @@ router.get('/iframe', async (req, res) => {
         );
         
         if (playlistRows.length > 0) {
-          const wowzaHost = 'stmv1.udicast.com';
+          const wowzaHost = 'stmv20.samcast.com.br';
           videoUrl = `https://${wowzaHost}/${userLogin}/${userLogin}/playlist.m3u8`;
           title = `Playlist: ${playlistRows[0].nome}`;
           isLive = true;
@@ -107,7 +107,7 @@ router.get('/iframe', async (req, res) => {
 
     if (stream) {
       // Stream ao vivo
-      const wowzaHost = 'stmv1.udicast.com';
+      const wowzaHost = 'stmv20.samcast.com.br';
 
       // Verificar se é stream de playlist ou OBS
       if (stream.includes('_playlist')) {
@@ -123,7 +123,7 @@ router.get('/iframe', async (req, res) => {
     } else if (userLogin && userLogin !== 'usuario') {
       // Playlist específica
       try {
-        const wowzaHost = 'stmv1.udicast.com';
+        const wowzaHost = 'stmv20.samcast.com.br';
         // Definir URL padrão OBS
         videoUrl = `https://${wowzaHost}/${userLogin}/${userLogin}/playlist.m3u8`;
 
@@ -141,7 +141,7 @@ router.get('/iframe', async (req, res) => {
 
     if (!videoUrl && userLogin && userLogin !== 'usuario') {
       try {
-        const wowzaHost = 'stmv1.udicast.com';
+        const wowzaHost = 'stmv20.samcast.com.br';
         videoUrl = `https://${wowzaHost}/${userLogin}/${userLogin}/playlist.m3u8`;
         title = `Stream: ${userLogin}`;
         isLive = true;
@@ -173,7 +173,7 @@ router.get('/iframe', async (req, res) => {
                 const fileName = pathParts[2];
                 const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');
 
-                const wowzaHost = 'stmv1.udicast.com';
+                const wowzaHost = 'stmv20.samcast.com.br';
                 videoUrl = `https://${wowzaHost}/${userPath}/${userPath}/mp4:${folderName}/${finalFileName}/playlist.m3u8`;
               } else {
                 videoUrl = `/content/${videoPath}`;
@@ -192,7 +192,7 @@ router.get('/iframe', async (req, res) => {
 
     if (!videoUrl && userLogin && userLogin !== 'usuario') {
       // Stream padrão do usuário
-      const wowzaHost = 'stmv1.udicast.com';
+      const wowzaHost = 'stmv20.samcast.com.br';
       videoUrl = `https://${wowzaHost}/${userLogin}/${userLogin}_live/playlist.m3u8`;
       title = `Stream: ${userLogin}`;
       isLive = true;
@@ -469,7 +469,7 @@ router.get("/iframe", async (req, res) => {
       userLogin = 'usuario';
     }
 
-    const wowzaHost = "stmv1.udicast.com";
+    const wowzaHost = "stmv20.samcast.com.br";
 
     // Caso VOD
     if (vod) {

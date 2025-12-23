@@ -37,15 +37,15 @@ class VideoURLBuilder {
             if (rows.length > 0) {
                 const server = rows[0];
                 // SEMPRE usar domínio, nunca IP
-                return 'stmv1.udicast.com';
+                return 'stmv20.samcast.com.br';
             }
             
             // Fallback
-            return 'stmv1.udicast.com';
+            return 'stmv20.samcast.com.br';
         } catch (error) {
             console.error('Erro ao obter domínio do servidor:', error);
             // Fallback
-            return 'stmv1.udicast.com';
+            return 'stmv20.samcast.com.br';
         }
     }
 

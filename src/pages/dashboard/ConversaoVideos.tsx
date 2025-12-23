@@ -344,7 +344,7 @@ const ConversaoVideos: React.FC = () => {
       const folderName = pathParts[1];
       const fileName = pathParts[2];
       const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');
-      const domain = 'stmv1.udicast.com';
+      const domain = 'stmv20.samcast.com.br';
       return `https://${domain}:1443/play.php?login=${userLogin}&video=${folderName}/${finalFileName}`;
     }
 
