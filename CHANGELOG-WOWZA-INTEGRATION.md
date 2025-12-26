@@ -151,7 +151,7 @@ Se os campos `usuario_api` ou `senha_api` estiverem NULL ou vazios:
 - **Senha**: 'admin'
 
 Se não houver servidor configurado, usa servidor padrão:
-- **Host**: 51.222.156.223
+- **Host**: 38.190.178.74
 - **Porta API**: 8087
 - **Usuário**: admin
 - **Senha**: admin

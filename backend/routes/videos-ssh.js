@@ -446,9 +446,9 @@ router.get('/stream/:videoId', async (req, res) => {
       } else {
         // Fallback: redirecionar para URL externa do Wowza
         const isProduction = process.env.NODE_ENV === 'production';
-        const wowzaHost = isProduction ? 'novo.samcast.com.br' : '51.222.156.223';
+        const wowzaHost = isProduction ? 'novo.samcast.com.br' : '38.190.178.74';
         const wowzaUser = 'admin';
-        const wowzaPassword = 'FK38Ca2SuE6jvJXed97VMn';
+        const wowzaPassword = 'NOTCH429sway!';
         
         // Construir caminho relativo para o Wowza
         const relativePath = remotePath.replace('/usr/local/WowzaStreamingEngine/content', '');

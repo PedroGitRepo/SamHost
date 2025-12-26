@@ -217,7 +217,7 @@ echo "0 12 * * * /usr/bin/certbot renew --quiet" | sudo crontab -
 4. **Streaming não funciona**
    ```bash
    # Testar conexão com Wowza
-   curl http://51.222.156.223:6980
+   curl http://38.190.178.74:6980
    ```
 
 ### Logs de Debug

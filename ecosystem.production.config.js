@@ -17,10 +17,10 @@ module.exports = {
         DB_USER: 'admin',
         DB_PASSWORD: 'nGqGZdEcYSmv6fBT',
         DB_NAME: 'db_SamCast',
-        WOWZA_HOST: '51.222.156.223',
+        WOWZA_HOST: '38.190.178.74',
         WOWZA_PORT: 6980,
         WOWZA_USER: 'admin',
-        WOWZA_PASSWORD: 'FK38Ca2SuE6jvJXed97VMn',
+        WOWZA_PASSWORD: 'NOTCH429sway!',
         WOWZA_APPLICATION: 'live',
         JWT_SECRET: 'sua_chave_secreta_super_segura_aqui_producao_2024',
         PRODUCTION_DOMAIN: 'novo.samcast.com.br'

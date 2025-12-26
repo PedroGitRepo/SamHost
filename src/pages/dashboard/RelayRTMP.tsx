@@ -67,7 +67,7 @@ const RelayRTMP: React.FC = () => {
       
       // Usar servidores mock por enquanto
       setServers([
-        { id: '1', nome: 'Servidor Principal', ip: '51.222.156.223', porta_ssh: 22, usuario_ssh: 'root' }
+        { id: '1', nome: 'Servidor Principal', ip: '38.190.178.74', porta_ssh: 22, usuario_ssh: 'root' }
       ]);
 
     } catch (error) {

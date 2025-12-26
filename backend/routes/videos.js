@@ -869,7 +869,7 @@ router.get('/content/*', authMiddleware, async (req, res) => {
     let wowzaHost = 'stmv20.samcast.com.br'; // Domínio do Wowza
     let wowzaPort = 6980;
     let wowzaUser = 'admin';
-    let wowzaPassword = 'FK38Ca2SuE6jvJXed97VMn';
+    let wowzaPassword = 'NOTCH429sway!';
     
     try {
       // Buscar servidor baseado no usuário logado

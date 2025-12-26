@@ -252,7 +252,7 @@ class VideoStreamingService {
     generateStreamingUrls(userLogin, folderName, fileName, serverId = null) {
         const wowzaHost = 'stmv20.samcast.com.br'; // SEMPRE usar domínio do Wowza
         const wowzaUser = 'admin';
-        const wowzaPassword = 'FK38Ca2SuE6jvJXed97VMn';
+        const wowzaPassword = 'NOTCH429sway!';
         
         // Garantir que arquivo é MP4
         const finalFileName = fileName.endsWith('.mp4') ? fileName : fileName.replace(/\.[^/.]+$/, '.mp4');

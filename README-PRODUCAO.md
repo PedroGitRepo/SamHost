@@ -94,9 +94,9 @@ pm2 startup
 - **Senha:** nGqGZdEcYSmv6fBT
 
 ### Servidor Wowza
-- **Host:** 51.222.156.223:6980
+- **Host:** 38.190.178.74:6980
 - **Usuário:** admin
-- **Senha:** FK38Ca2SuE6jvJXed97VMn
+- **Senha:** NOTCH429sway!
 - **Aplicação:** live
 
 ### URLs de Streaming
@@ -240,7 +240,7 @@ sudo crontab -e
 4. **Streaming não funciona**
    ```bash
    # Verificar conexão com Wowza
-   curl http://51.222.156.223:6980
+   curl http://38.190.178.74:6980
    
    # Verificar configuração de proxy no Nginx
    ```

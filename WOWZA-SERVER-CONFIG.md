@@ -137,7 +137,7 @@ Se não houver servidor configurado, o sistema usa valores padrão:
 
 ```javascript
 {
-  ip: '51.222.156.223',
+  ip: '38.190.178.74',
   porta_api: 8087,
   usuario_api: 'admin',
   senha_api: 'admin'

@@ -24,7 +24,7 @@ class WowzaLiveManager {
 
             if (serverRows.length === 0) {
                 // Usar servidor padrão
-                this.baseUrl = 'http://51.222.156.223:6980';
+                this.baseUrl = 'http://38.190.178.74:6980';
                 this.username = 'admin';
                 this.password = 'admin';
             } else {

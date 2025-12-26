@@ -475,7 +475,7 @@ class StreamingControlService {
             // Usar domínio correto do Wowza e credenciais
             const wowzaHost = 'stmv20.samcast.com.br';
             const wowzaUser = 'admin';
-            const wowzaPassword = 'FK38Ca2SuE6jvJXed97VMn';
+            const wowzaPassword = 'NOTCH429sway!';
 
             // URL do endpoint Wowza schedules
             const url = `http://${wowzaHost}:555/schedules?appName=${login}&action=reloadSchedule`;

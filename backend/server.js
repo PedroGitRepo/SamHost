@@ -160,10 +160,10 @@ app.use('/content', async (req, res, next) => {
     let folderName = pathParts[1];
     let fileName = pathParts[2];
 
-    let wowzaHost = '51.222.156.223';
+    let wowzaHost = '38.190.178.74';
     let wowzaPort = 6980;
     let wowzaUser = 'admin';
-    let wowzaPassword = 'FK38Ca2SuE6jvJXed97VMn';
+    let wowzaPassword = 'NOTCH429sway!';
 
     try {
       const [userServerRows] = await db.execute(
@@ -268,10 +268,10 @@ app.use('/wowza-direct', async (req, res, next) => {
     const requestPath = req.path.replace('/wowza-direct/', '');
     const userLogin = requestPath.split('/')[0];
 
-    let wowzaHost = '51.222.156.223';
+    let wowzaHost = '38.190.178.74';
     let wowzaPort = 6980;
     let wowzaUser = 'admin';
-    let wowzaPassword = 'FK38Ca2SuE6jvJXed97VMn';
+    let wowzaPassword = 'NOTCH429sway!';
 
     try {
       const [userServerRows] = await db.execute(
@@ -309,10 +309,10 @@ app.get('/api/wowza/video-url/:userLogin/:folderName/:fileName', async (req, res
     const JWT_SECRET = process.env.JWT_SECRET || 'sua_chave_secreta_super_segura_aqui';
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    let wowzaHost = '51.222.156.223';
+    let wowzaHost = '38.190.178.74';
     let wowzaPort = 6980;
     let wowzaUser = 'admin';
-    let wowzaPassword = 'FK38Ca2SuE6jvJXed97VMn';
+    let wowzaPassword = 'NOTCH429sway!';
 
     try {
       const [userServerRows] = await db.execute(

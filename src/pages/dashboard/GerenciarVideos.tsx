@@ -632,7 +632,7 @@ const GerenciarVideos: React.FC = () => {
           </div>
           <div className="text-right">
             <p className="text-blue-800 text-sm">
-              Servidor: <strong>Wowza (51.222.156.223)</strong>
+              Servidor: <strong>Wowza (38.190.178.74)</strong>
             </p>
             <p className="text-blue-700 text-xs">
               Vídeos servidos diretamente do Wowza
