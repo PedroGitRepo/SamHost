@@ -20,7 +20,7 @@ cp -r logs "$BACKUP_DIR/" 2>/dev/null || true
 
 # Backup do banco de dados (opcional - descomente se necessário)
 # echo "🗄️ Backup do banco de dados..."
-# mysqldump -h 104.251.209.68 -P 35689 -u admin -p'Adr1an@' db_SamCast > "$BACKUP_DIR/database_backup.sql"
+# mysqldump -h 15.235.115.105 -P 3306 -u admin -p'nGqGZdEcYSmv6fBT' db_SamCast > "$BACKUP_DIR/database_backup.sql"
 
 # Backup dos uploads/conteúdo (se existir)
 if [ -d "/usr/local/WowzaStreamingEngine/content" ]; then

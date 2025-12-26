@@ -12,10 +12,10 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 3001,
         // Configurações específicas de produção
-        DB_HOST: '104.251.209.68',
-        DB_PORT: 35689,
+        DB_HOST: '15.235.115.105',
+        DB_PORT: 3306,
         DB_USER: 'admin',
-        DB_PASSWORD: 'Adr1an@',
+        DB_PASSWORD: 'nGqGZdEcYSmv6fBT',
         DB_NAME: 'db_SamCast',
         WOWZA_HOST: '51.222.156.223',
         WOWZA_PORT: 6980,

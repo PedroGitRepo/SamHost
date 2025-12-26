@@ -33,7 +33,7 @@ Sistema completo de player externo para `playerv.novo.samcast.com.br` que integr
 ### 1. Criar Subdomínio
 ```bash
 # Adicionar entrada DNS
-playerv.novo.samcast.com.br A 104.251.209.68
+playerv.novo.samcast.com.br A 15.235.115.105
 ```
 
 ### 2. Configurar Virtual Host (Apache)

@@ -88,10 +88,10 @@ pm2 startup
   - **Porta 80:** Frontend web
 
 ### Banco de Dados
-- **Host:** 104.251.209.68:35689
+- **Host:** 15.235.115.105:3306
 - **Database:** db_SamCast
 - **Usuário:** admin
-- **Senha:** Adr1an@
+- **Senha:** nGqGZdEcYSmv6fBT
 
 ### Servidor Wowza
 - **Host:** 51.222.156.223:6980
@@ -176,7 +176,7 @@ pm2 restart samhost-backend
 ### Backup
 ```bash
 # Backup do banco (se necessário)
-mysqldump -h 104.251.209.68 -P 35689 -u admin -p db_SamCast > backup_$(date +%Y%m%d).sql
+mysqldump -h 15.235.115.105 -P 3306 -u admin -p db_SamCast > backup_$(date +%Y%m%d).sql
 
 # Backup dos arquivos de configuração
 tar -czf config_backup_$(date +%Y%m%d).tar.gz nginx.conf ecosystem.config.js .env.production

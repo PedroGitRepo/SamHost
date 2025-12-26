@@ -7,10 +7,10 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 // Configurações do banco
 $db_config = [
-    'host' => '104.251.209.68',
-    'port' => 35689,
+    'host' => '15.235.115.105',
+    'port' => 3306,
     'user' => 'admin',
-    'password' => 'Adr1an@',
+    'password' => 'nGqGZdEcYSmv6fBT',
     'database' => 'db_SamCast'
 ];
 

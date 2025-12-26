@@ -3,10 +3,10 @@ const mysql = require('mysql2/promise');
 const isProduction = process.env.NODE_ENV === 'production';
 
 const dbConfig = {
-  host: '104.251.209.68',
-  port: 35689,
+  host: '15.235.115.105',
+  port: 3306,
   user: 'admin',
-  password: 'Adr1an@',
+  password: 'nGqGZdEcYSmv6fBT',
   database: 'db_SamCast',
   charset: 'utf8mb4',
   timezone: '+00:00',
