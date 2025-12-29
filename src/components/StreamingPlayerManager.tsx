@@ -109,12 +109,12 @@ const StreamingPlayerManager: React.FC<StreamingPlayerManagerProps> = ({
           
           if (data.stream_type === 'playlist' && data.transmission) {
             // Para playlist, usar SMIL conforme PHP: smil:transcoder.smil ou smil:playlists_agendamentos.smil
-            streamUrl = `https://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`;
+            streamUrl = `http://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`;
             title = `📺 Playlist: ${data.transmission.playlist_nome || data.transmission.titulo}`;
             console.log('🎵 Stream de playlist detectado:', streamUrl);
           } else if (data.stream_type === 'obs' && data.obs_stream?.is_live) {
             // Para OBS, usar formato padrão: servidor/login/login/playlist.m3u8
-            streamUrl = `https://stmv20.samcast.com.br/${userLogin}/${userLogin}_live/playlist.m3u8`;
+            streamUrl = `http://stmv20.samcast.com.br/${userLogin}/${userLogin}_live/playlist.m3u8`;
             title = `📡 OBS: ${data.obs_stream.streamName || `${userLogin}_live`}`;
             console.log('📡 Stream OBS detectado:', streamUrl);
           }
@@ -723,8 +723,8 @@ const StreamingPlayerManager: React.FC<StreamingPlayerManagerProps> = ({
             <div>
               <span className="font-medium text-gray-700">URLs de Streaming:</span>
               <ul className="text-gray-600 mt-1 space-y-1">
-                <li>• <strong>HLS Playlist:</strong> https://stmv20.samcast.com.br/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8</li>
-                <li>• <strong>HLS OBS:</strong> https://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8</li>
+                <li>• <strong>HLS Playlist:</strong> http://stmv20.samcast.com.br/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8</li>
+                <li>• <strong>HLS OBS:</strong> http://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8</li>
                 <li>• <strong>RTMP:</strong> rtmp://stmv20.samcast.com.br:1935/{userLogin}</li>
               </ul>
             </div>
@@ -781,8 +781,8 @@ const StreamingPlayerManager: React.FC<StreamingPlayerManagerProps> = ({
               </ul>
               <div className="mt-3 p-2 bg-yellow-100 rounded text-xs">
                 <p><strong>URLs de teste:</strong></p>
-                <p>• Playlist: https://stmv20.samcast.com.br/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8</p>
-                <p>• OBS: https://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8</p>
+                <p>• Playlist: http://stmv20.samcast.com.br/{userLogin}/smil:playlists_agendamentos.smil/playlist.m3u8</p>
+                <p>• OBS: http://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8</p>
               </div>
             </div>
           </div>

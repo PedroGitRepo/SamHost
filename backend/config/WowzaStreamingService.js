@@ -853,7 +853,7 @@ class WowzaStreamingService {
           success: true,
           message: 'Streaming iniciado com sucesso',
           urls: {
-            hls: `https://stmv20.samcast.com.br/${userLogin}/smil:${smilFileName}/playlist.m3u8`,
+            hls: `http://stmv20.samcast.com.br/${userLogin}/smil:${smilFileName}/playlist.m3u8`,
             rtmp: `rtmp://stmv20.samcast.com.br:1935/${userLogin}/smil:${smilFileName}`,
             rtsp: `rtsp://stmv20.samcast.com.br:554/${userLogin}/smil:${smilFileName}`
           }

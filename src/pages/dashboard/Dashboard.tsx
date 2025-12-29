@@ -651,7 +651,7 @@ const Dashboard: React.FC = () => {
               <div className="lg:col-span-3 bg-black rounded-lg overflow-hidden" style={{ paddingTop: '56.25%', position: 'relative' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
                   <ClapprStreamingPlayer
-                    src={`https://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`}
+                    src={`http://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`}
                     title={playlistName || 'Transmissão'}
                     isLive={true}
                     autoplay={true}

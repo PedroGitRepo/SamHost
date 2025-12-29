@@ -59,7 +59,7 @@ class VideoURLBuilder {
             const finalFileName = fileName.includes('.') ? fileName : `${fileName}.mp4`;
             
             // Usar porta 1443 para o player externo (conforme configuração atual)
-            const url = `https://${domain}:1443/${this.playScript}?login=${userLogin}&video=${sanitizedFolder}/${finalFileName}`;
+            const url = `http://${domain}:1443/${this.playScript}?login=${userLogin}&video=${sanitizedFolder}/${finalFileName}`;
             
             console.log(`🎥 URL construída: ${url}`);
             return url;
@@ -152,7 +152,7 @@ class VideoURLBuilder {
     isValidVideoUrl(url) {
         if (!url) return false;
         
-        const pattern = /^https:\/\/[^:]+:1443\/play\.php\?login=[^&]+&video=[^&]+$/;
+        const pattern = /^http:\/\/[^:]+:1443\/play\.php\?login=[^&]+&video=[^&]+$/;
         return pattern.test(url);
     }
 

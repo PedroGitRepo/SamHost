@@ -96,7 +96,7 @@ const AppMultiplataforma: React.FC = () => {
   });
 
   const userLogin = user?.usuario || (user?.email ? user.email.split('@')[0] : `user_${user?.id || 'usuario'}`);
-  const playerUrl = `https://stmv20.samcast.com.br:1443/play.php?login=${userLogin}&video=default/live.mp4`;
+  const playerUrl = `http://stmv20.samcast.com.br:1443/play.php?login=${userLogin}&video=default/live.mp4`;
 
   useEffect(() => {
     loadAppData();

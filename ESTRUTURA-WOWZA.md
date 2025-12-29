@@ -69,28 +69,28 @@
 ### URLs de Streaming
 ### URLs de Streaming (Padrão de Referência)
 - **RTMP:** rtmp://stmv20.samcast.com.br:1935/{usuario}
-- **HLS OBS:** https://stmv20.samcast.com.br/{usuario}/{usuario}/playlist.m3u8
-- **HLS SMIL (Playlists):** https://stmv20.samcast.com.br/{usuario}/smil:playlists_agendamentos.smil/playlist.m3u8
-- **DASH OBS:** https://stmv20.samcast.com.br/{usuario}/{usuario}/manifest.mpd
-- **DASH SMIL:** https://stmv20.samcast.com.br/{usuario}/smil:playlists_agendamentos.smil/manifest.mpd
+- **HLS OBS:** http://stmv20.samcast.com.br/{usuario}/{usuario}/playlist.m3u8
+- **HLS SMIL (Playlists):** http://stmv20.samcast.com.br/{usuario}/smil:playlists_agendamentos.smil/playlist.m3u8
+- **DASH OBS:** http://stmv20.samcast.com.br/{usuario}/{usuario}/manifest.mpd
+- **DASH SMIL:** http://stmv20.samcast.com.br/{usuario}/smil:playlists_agendamentos.smil/manifest.mpd
 - **RTSP OBS:** rtsp://stmv20.samcast.com.br:554/{usuario}/{usuario}
 - **RTSP SMIL:** rtsp://stmv20.samcast.com.br:554/{usuario}/smil:playlists_agendamentos.smil
 - **RTMP SMIL:** rtmp://stmv20.samcast.com.br:1935/{usuario}/smil:playlists_agendamentos.smil
-- **Vídeos VOD:** https://stmv20.samcast.com.br/{usuario}/{usuario}/mp4:{pasta}/{arquivo}/playlist.m3u8
+- **Vídeos VOD:** http://stmv20.samcast.com.br/{usuario}/{usuario}/mp4:{pasta}/{arquivo}/playlist.m3u8
 - **Aplicação Wowza:** {usuario} (aplicação específica por usuário)
 - **Aplicação Wowza:** {usuario} (aplicação específica por usuário)
 
 ### Para Transmissão ao Vivo (OBS)
 - **RTMP URL:** `rtmp://novo.samcast.com.br:1935/{usuario}`
 - **Stream Key:** `{usuario}_live`
-- **HLS Playback:** `https://stmv20.samcast.com.br:80/{usuario}/{usuario}_live/playlist.m3u8`
-- **HLS Seguro:** `https://stmv20.samcast.com.br:443/{usuario}/{usuario}_live/playlist.m3u8`
-- **DASH Playback:** `https://stmv20.samcast.com.br:80/{usuario}/{usuario}_live/manifest.mpd`
+- **HLS Playback:** `http://stmv20.samcast.com.br:80/{usuario}/{usuario}_live/playlist.m3u8`
+- **HLS Seguro:** `http://stmv20.samcast.com.br:443/{usuario}/{usuario}_live/playlist.m3u8`
+- **DASH Playback:** `http://stmv20.samcast.com.br:80/{usuario}/{usuario}_live/manifest.mpd`
 - **RTSP Playback:** `rtsp://stmv20.samcast.com.br:554/{usuario}/{usuario}_live`
 
 ### Para Vídeos VOD
 - **HLS URL:** `http://stmv20.samcast.com.br:80/{usuario}/_definst_/mp4:{pasta}/{arquivo}/playlist.m3u8`
-- **HLS Seguro:** `https://stmv20.samcast.com.br:443/{usuario}/_definst_/mp4:{pasta}/{arquivo}/playlist.m3u8`
+- **HLS Seguro:** `http://stmv20.samcast.com.br:443/{usuario}/_definst_/mp4:{pasta}/{arquivo}/playlist.m3u8`
 - **DASH URL:** `http://stmv20.samcast.com.br:80/{usuario}/_definst_/mp4:{pasta}/{arquivo}/manifest.mpd`
 - **RTSP URL:** `rtsp://stmv20.samcast.com.br:554/{usuario}/_definst_/mp4:{pasta}/{arquivo}`
 - **VOD HLS:** `http://stmv20.samcast.com.br:80/vod/_definst_/mp4:{usuario}/{pasta}/{arquivo}/playlist.m3u8`

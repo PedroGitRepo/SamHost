@@ -306,7 +306,7 @@ const RelayRTMP: React.FC = () => {
             </p>
             <ul className="text-blue-800 text-sm space-y-1">
               <li>• <strong>RTMP:</strong> rtmp://servidor.com/live/stream_key</li>
-              <li>• <strong>M3U8/HLS:</strong> https://servidor.com/stream/playlist.m3u8</li>
+              <li>• <strong>M3U8/HLS:</strong> http://servidor.com/stream/playlist.m3u8</li>
               <li>• O sistema verifica automaticamente se a URL está online antes de ativar</li>
               <li>• O relay funciona independentemente de outros tipos de transmissão</li>
             </ul>
@@ -432,7 +432,7 @@ const RelayRTMP: React.FC = () => {
                   urlValid === false ? 'border-red-500' : 
                   urlValid === true ? 'border-green-500' : 'border-gray-300'
                 }`}
-                placeholder="rtmp://servidor.com/live/stream_key ou https://servidor.com/stream/playlist.m3u8"
+                placeholder="rtmp://servidor.com/live/stream_key ou http://servidor.com/stream/playlist.m3u8"
                 disabled={relayStatus?.relay_status === 'ativo'}
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -464,7 +464,7 @@ const RelayRTMP: React.FC = () => {
               </p>
             )}
             <p className="mt-1 text-xs text-gray-500">
-              Formatos aceitos: rtmp://servidor/app/stream OU https://servidor/stream.m3u8
+              Formatos aceitos: rtmp://servidor/app/stream OU http://servidor/stream.m3u8
             </p>
             <div className="mt-2">
               <button

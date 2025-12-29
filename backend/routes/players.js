@@ -402,7 +402,7 @@ router.get('/social', async (req, res) => {
       return res.status(400).send('Stream parameter required');
     }
     
-    const videoUrl = `https://stmv20.samcast.com.br/${userLogin}/${stream}/playlist.m3u8`;
+    const videoUrl = `http://stmv20.samcast.com.br/${userLogin}/${stream}/playlist.m3u8`;
     
     const socialHTML = `
 <!DOCTYPE html>

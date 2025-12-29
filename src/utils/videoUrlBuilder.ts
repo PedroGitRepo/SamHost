@@ -1,6 +1,6 @@
 /**
  * Utilitário para construir URLs de vídeo baseadas no padrão fornecido
- * Formato: https://domain:1443/play.php?login=usuario&video=pasta/arquivo.mp4 (Player Externo)
+ * Formato: http://domain:1443/play.php?login=usuario&video=pasta/arquivo.mp4 (Player Externo)
  * Novo: Suporte a iFrame para incorporação no painel
  */
 
@@ -35,7 +35,7 @@ export class VideoUrlBuilder {
     const domain = this.getDomain();
     const finalFileName = this.ensureMp4Extension(parts.fileName);
 
-    return `https://${domain}:${this.PORT}/play.php?login=${parts.userLogin}&video=${parts.folderName}/${finalFileName}`;
+    return `http://${domain}:${this.PORT}/play.php?login=${parts.userLogin}&video=${parts.folderName}/${finalFileName}`;
   }
 
   /**
@@ -81,7 +81,7 @@ export class VideoUrlBuilder {
    * Valida se uma URL está no formato correto
    */
   static isValidDirectUrl(url: string): boolean {
-    const pattern = /^https:\/\/[^:]+:1443\/play\.php\?login=[^&]+&video=[^&]+$/;
+    const pattern = /^http:\/\/[^:]+:1443\/play\.php\?login=[^&]+&video=[^&]+$/;
     return pattern.test(url);
   }
 
@@ -145,19 +145,19 @@ export class VideoUrlBuilder {
 
     return {
       // HLS seguindo padrão de referência (sem porta)
-      hls: `https://${domain}/${parts.userLogin}/${parts.userLogin}/playlist.m3u8`,
+      hls: `http://${domain}/${parts.userLogin}/${parts.userLogin}/playlist.m3u8`,
 
       // HLS seguro (sem porta)
-      hls_secure: `https://${domain}/${parts.userLogin}/${parts.userLogin}/playlist.m3u8`,
+      hls_secure: `http://${domain}/${parts.userLogin}/${parts.userLogin}/playlist.m3u8`,
 
       // DASH (sem porta)
-      dash: `https://${domain}/${parts.userLogin}/${parts.userLogin}/manifest.mpd`,
+      dash: `http://${domain}/${parts.userLogin}/${parts.userLogin}/manifest.mpd`,
 
       // RTSP
       rtsp: `rtsp://${domain}:554/${parts.userLogin}/${parts.userLogin}/mp4:${parts.folderName}/${finalFileName}`,
 
       // URL direta do player (porta 1443)
-      direct: `https://${domain}:${this.PORT}/play.php?login=${parts.userLogin}&video=${parts.folderName}/${finalFileName}`
+      direct: `http://${domain}:${this.PORT}/play.php?login=${parts.userLogin}&video=${parts.folderName}/${finalFileName}`
     };
   }
 

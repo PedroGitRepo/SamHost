@@ -24,7 +24,7 @@ Aplicação Wowza é iniciada via JMX
     ↓
 Transmissão começa automaticamente
     ↓
-Stream disponível em: https://stmv20.samcast.com.br:1935/{usuario}/{usuario}/playlist.m3u8
+Stream disponível em: http://stmv20.samcast.com.br:1935/{usuario}/{usuario}/playlist.m3u8
 ```
 
 ## Endpoints da API
@@ -56,9 +56,9 @@ Stream disponível em: https://stmv20.samcast.com.br:1935/{usuario}/{usuario}/pl
   "videos_count": 10,
   "player_urls": {
     "iframe": "https://novo.samcast.com.br:3001/api/player-port/iframe?login=usuario&playlist=123...",
-    "direct_hls": "https://stmv20.samcast.com.br:1935/usuario/smil:playlists_agendamentos.smil/playlist.m3u8",
+    "direct_hls": "http://stmv20.samcast.com.br:1935/usuario/smil:playlists_agendamentos.smil/playlist.m3u8",
     "direct_rtmp": "rtmp://stmv20.samcast.com.br:1935/usuario/smil:playlists_agendamentos.smil",
-    "wowza_url": "https://stmv20.samcast.com.br:1935/usuario/usuario/playlist.m3u8"
+    "wowza_url": "http://stmv20.samcast.com.br:1935/usuario/usuario/playlist.m3u8"
   },
   "streaming_info": {
     "server": "stmv20.samcast.com.br",
@@ -67,7 +67,7 @@ Stream disponível em: https://stmv20.samcast.com.br:1935/{usuario}/{usuario}/pl
     "status": "Transmitindo"
   },
   "instructions": {
-    "access": "Acesse a transmissão em: https://stmv20.samcast.com.br:1935/usuario/smil:playlists_agendamentos.smil/playlist.m3u8",
+    "access": "Acesse a transmissão em: http://stmv20.samcast.com.br:1935/usuario/smil:playlists_agendamentos.smil/playlist.m3u8",
     "player": "Use a URL do iframe para incorporar o player em seu site",
     "obs": "A transmissão está ativa e pode ser acessada pelos links acima"
   }
@@ -189,7 +189,7 @@ Após iniciar a transmissão, ela estará disponível em:
 
 ### HLS (Recomendado)
 ```
-https://stmv20.samcast.com.br:1935/{usuario}/smil:playlists_agendamentos.smil/playlist.m3u8
+http://stmv20.samcast.com.br:1935/{usuario}/smil:playlists_agendamentos.smil/playlist.m3u8
 ```
 
 ### RTMP

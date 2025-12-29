@@ -9,12 +9,12 @@ Substituímos o sistema de IFrame player pelo **Clappr Player** em todas as tela
 ### 1. Dashboard (`src/pages/dashboard/Dashboard.tsx`)
 - **Antes**: Usava `IFrameVideoPlayer` que carregava um iframe externo
 - **Depois**: Usa `ClapprStreamingPlayer` que carrega diretamente a URL M3U8
-- **URL de Stream**: `https://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8`
+- **URL de Stream**: `http://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8`
 
 ### 2. Playlists (`src/pages/dashboard/Playlists.tsx`)
 - **Antes**: Usava `StreamingPlayerManager` com iframe interno
 - **Depois**: Usa `ClapprStreamingPlayer` diretamente
-- **URL de Stream**: `https://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8`
+- **URL de Stream**: `http://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8`
 
 ### 3. Streaming Player Manager (`src/components/players/StreamingPlayerManager.tsx`)
 - **Antes**: Renderizava `IFrameVideoPlayer`
@@ -44,7 +44,7 @@ O player está configurado com:
 
 ```tsx
 <ClapprStreamingPlayer
-  src="https://stmv20.samcast.com.br/pedrowcore/pedrowcore/playlist.m3u8"
+  src="http://stmv20.samcast.com.br/pedrowcore/pedrowcore/playlist.m3u8"
   title="Minha Transmissão"
   isLive={true}
   autoplay={true}
@@ -65,7 +65,7 @@ O player está configurado com:
 Para testar a transmissão diretamente no celular:
 
 1. Abra o navegador (Chrome, Safari, etc.)
-2. Digite a URL: `https://stmv20.samcast.com.br/pedrowcore/pedrowcore/playlist.m3u8`
+2. Digite a URL: `http://stmv20.samcast.com.br/pedrowcore/pedrowcore/playlist.m3u8`
 3. O navegador deve abrir o player nativo automaticamente
 
 Ou use o dashboard/playlists que agora carregam o Clappr automaticamente!
@@ -74,12 +74,12 @@ Ou use o dashboard/playlists que agora carregam o Clappr automaticamente!
 
 ### Playlist/Agendamento
 ```
-https://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8
+http://stmv20.samcast.com.br/{userLogin}/{userLogin}/playlist.m3u8
 ```
 
 ### OBS Live
 ```
-https://stmv20.samcast.com.br/{userLogin}/{userLogin}_live/playlist.m3u8
+http://stmv20.samcast.com.br/{userLogin}/{userLogin}_live/playlist.m3u8
 ```
 
 ## Troubleshooting

@@ -551,7 +551,7 @@ const GerenciarVideos: React.FC = () => {
       // SEMPRE usar domínio do Wowza, NUNCA o domínio da aplicação
       const domain = 'stmv20.samcast.com.br';
       
-      return `https://${domain}:1443/play.php?login=${userLogin}&video=${folderName}/${finalFileName}`;
+      return `http://${domain}:1443/play.php?login=${userLogin}&video=${folderName}/${finalFileName}`;
     }
     
     return '';
