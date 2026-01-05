@@ -50,6 +50,7 @@ class StreamingControlService {
      */
     async checkStreamingStatus(serverIp, serverPassword, login) {
         try {
+            // Buscar servidor pelo IP
             const [serverRows] = await db.execute(
                 'SELECT codigo FROM servidores WHERE ip = ?',
                 [serverIp]
@@ -61,26 +62,47 @@ class StreamingControlService {
 
             const serverId = serverRows[0].codigo;
 
-            // Comando para verificar status via JMX
+            // Comando JMX do Wowza
             const command = `${this.jmxCommand} getApplicationInstanceInfo ${login}`;
 
             try {
                 const result = await SSHManager.executeCommand(serverId, command);
 
-                // Verificar se aplicação está carregada/ativa
-                if (result.stdout.includes('loaded') || result.stdout.includes('running')) {
+                const output = result.stdout || '';
+
+                // DEBUG (ative se precisar)
+                // console.log(`📡 JMX output (${login}):\n${output}`);
+
+                // ✔️ Streaming ATIVO (equivalente a "loaded" no PHP)
+                if (
+                    output.match(/isLoaded\s*=\s*true/i) ||
+                    output.match(/state\s*=\s*STARTED/i)
+                ) {
                     return { status: 'loaded' };
-                } else if (result.stdout.includes('unloaded')) {
-                    return { status: 'unloaded' };
-                } else {
-                    return { status: '' };
                 }
+
+                // ❌ Streaming DESLIGADO
+                if (
+                    output.match(/isLoaded\s*=\s*false/i) ||
+                    output.match(/state\s*=\s*STOPPED/i) ||
+                    output.match(/unloaded/i)
+                ) {
+                    return { status: 'unloaded' };
+                }
+
+                // ❓ Estado indefinido
+                return { status: '' };
+
             } catch (error) {
-                console.warn('Erro ao verificar status via JMX:', error.message);
+                console.warn(
+                    `⚠️ Falha ao executar JMX para ${login}:`,
+                    error.message
+                );
                 return { status: 'unloaded' };
             }
+
         } catch (error) {
-            console.error('Erro ao verificar status do streaming:', error);
+            console.error('❌ Erro ao verificar status do streaming:', error);
             return { status: '' };
         }
     }
@@ -417,7 +439,7 @@ class StreamingControlService {
             }
 
             // Verificar status normal via JMX
-            const status = await this.checkStreamingStatus(server.ip, server.senha, streaming.usuario);
+            const status = await this.checkStreamingStatus(server.ip, server.senha, streaming.login);
 
             if (status.status === 'loaded') {
                 // TODO: Verificar se há transmissão ao vivo (incoming streams)

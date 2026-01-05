@@ -612,7 +612,7 @@ const Playlists: React.FC = () => {
           titulo: `Transmissão: ${selectedPlaylist.nome}`,
           descricao: `Playlist ${selectedPlaylist.nome} com ${playlistVideos.length} vídeos`,
           playlist_id: selectedPlaylist.id,
-          platform_ids: [], // Sem plataformas externas por padrão
+          platform_ids: null, // Sem plataformas externas por padrão
           enable_recording: false,
           use_smil: true,
           loop_playlist: true // Repetir playlist automaticamente

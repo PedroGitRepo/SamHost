@@ -71,7 +71,7 @@ const Dashboard: React.FC = () => {
   const [playlistName, setPlaylistName] = useState<string>('');
   const [playerError, setPlayerError] = useState<string | null>(null);
   const [wowzaControlLoading, setWowzaControlLoading] = useState(false);
-  const [wowzaStatus, setWowzaStatus] = useState<{running: boolean; message: string} | null>(null);
+  const [wowzaStatus, setWowzaStatus] = useState<{ running: boolean; message: string } | null>(null);
   const [playlists, setPlaylists] = useState<any[]>([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState<string>('');
   const [startingPlaylist, setStartingPlaylist] = useState(false);
@@ -95,7 +95,7 @@ const Dashboard: React.FC = () => {
 
   const handlePauseTransmission = async () => {
     if (!confirm('Deseja pausar a transmissão atual?')) return;
-    
+
     try {
       const token = await getToken();
       const response = await fetch('/api/streaming/pause', {
@@ -105,7 +105,7 @@ const Dashboard: React.FC = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      
+
       const result = await response.json();
       if (result.success) {
         toast.success('Transmissão pausada');
@@ -259,7 +259,7 @@ const Dashboard: React.FC = () => {
   };
   const loadDashboardData = async () => {
     if (loadingStats) return; // Evitar múltiplas chamadas simultâneas
-    
+
     setLoadingStats(true);
     try {
       await Promise.all([
@@ -278,7 +278,7 @@ const Dashboard: React.FC = () => {
   const loadStats = async () => {
     try {
       const token = await getToken();
-      
+
       // Carregar apenas dados essenciais para melhor performance
       const [foldersResponse, playlistsResponse] = await Promise.all([
         fetch('/api/folders', { headers: { Authorization: `Bearer ${token}` } }),
@@ -320,30 +320,30 @@ const Dashboard: React.FC = () => {
       const response = await fetch('/api/streaming/status', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setStreamStatus(data);
-        
+
         // Definir URL do player e nome baseado no status
         if (data.is_live) {
           if (data.stream_type === 'obs' && data.obs_stream?.is_live) {
             // Para OBS, usar URL do player na porta do sistema
-            const baseUrl = window.location.protocol === 'https:' 
+            const baseUrl = window.location.protocol === 'https:'
               ? `https://${window.location.hostname}:3001`
               : `http://${window.location.hostname}:3001`;
             setCurrentVideoUrl(`${baseUrl}/api/player-port/iframe?login=${userLogin}&player=1&contador=true`);
             setPlaylistName(`📡 OBS: ${data.obs_stream.streamName || `${userLogin}_live`}`);
           } else if (data.transmission) {
             // Para playlist, usar URL do player na porta do sistema
-            const baseUrl = window.location.protocol === 'https:' 
+            const baseUrl = window.location.protocol === 'https:'
               ? `https://${window.location.hostname}:3001`
               : `http://${window.location.hostname}:3001`;
             setCurrentVideoUrl(`${baseUrl}/api/player-port/iframe?login=${userLogin}&playlist=${data.transmission.codigo_playlist}&player=1&contador=true&compartilhamento=true`);
-            
+
             // Usar nome da playlist da resposta
-            setPlaylistName(data.transmission.playlist_nome ? 
-              `📺 Playlist: ${data.transmission.playlist_nome}` : 
+            setPlaylistName(data.transmission.playlist_nome ?
+              `📺 Playlist: ${data.transmission.playlist_nome}` :
               data.transmission.titulo);
           }
           setShowPlayer(true);
@@ -353,7 +353,7 @@ const Dashboard: React.FC = () => {
           setPlaylistName('');
           setPlayerError(null);
         }
-        
+
         // Log de debug para verificar conexão Wowza
         if (data.wowza_info?.connection_error) {
           console.warn('⚠️ Problema na conexão Wowza:', data.wowza_info.connection_error);
@@ -421,8 +421,30 @@ const Dashboard: React.FC = () => {
     }
 
     setStartingPlaylist(true);
+
     try {
       const token = await getToken();
+
+      // 1️⃣ GARANTIR WOWZA ATIVO (igual PHP antigo)
+      if (!wowzaStatus?.running) {
+        const wowzaResp = await fetch('/api/wowza-control/start', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const wowzaResult = await wowzaResp.json();
+        if (!wowzaResult.success) {
+          toast.error('Não foi possível iniciar o Wowza');
+          return;
+        }
+
+        // Aguarda o App subir
+        await new Promise(r => setTimeout(r, 2000));
+      }
+
+      // 2️⃣ INICIAR PLAYLIST (live)
       const response = await fetch('/api/streaming/start', {
         method: 'POST',
         headers: {
@@ -448,24 +470,25 @@ const Dashboard: React.FC = () => {
       } else {
         toast.error(result.error || 'Erro ao iniciar playlist');
       }
+
     } catch (error) {
-      console.error('Erro ao iniciar playlist:', error);
+      console.error(error);
       toast.error('Erro ao iniciar playlist');
     } finally {
       setStartingPlaylist(false);
     }
   };
-
+  
   const formatFileSize = (bytes: number): string => {
     const units = ['B', 'KB', 'MB', 'GB'];
     let size = bytes;
     let unitIndex = 0;
-    
+
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;
     }
-    
+
     return `${size.toFixed(1)} ${units[unitIndex]}`;
   };
 
@@ -506,7 +529,7 @@ const Dashboard: React.FC = () => {
       <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 rounded-2xl p-8 text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-32 -mt-32"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 rounded-full -ml-24 -mb-24"></div>
-        
+
         <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div>
@@ -531,7 +554,7 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             {streamStatus?.is_live && (
               <div className="text-right">
                 <div className="flex items-center space-x-2 mb-2">
@@ -634,314 +657,314 @@ const Dashboard: React.FC = () => {
 
       {/* Player Section */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <div className="flex items-center space-x-3">
-                <h2 className="text-xl font-bold text-gray-900">Player de Transmissão</h2>
-                {streamStatus?.is_live && (
-                  <div className="flex items-center space-x-2 px-3 py-1 bg-red-500 rounded-full shadow-lg">
-                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                    <span className="text-xs font-bold text-white">AO VIVO</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
-              {/* Player - 3 colunas - SEMPRE ATIVO */}
-              <div className="lg:col-span-3 bg-black rounded-lg overflow-hidden" style={{ paddingTop: '56.25%', position: 'relative' }}>
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-                  <ClapprStreamingPlayer
-                    src={`http://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`}
-                    title={playlistName || 'Transmissão'}
-                    isLive={true}
-                    autoplay={true}
-                    controls={true}
-                    className="w-full h-full"
-                    streamStats={{
-                      viewers: streamStatus?.transmission?.stats.viewers || streamStatus?.obs_stream?.viewers || 0,
-                      bitrate: streamStatus?.transmission?.stats.bitrate || streamStatus?.obs_stream?.bitrate || 0,
-                      uptime: streamStatus?.transmission?.stats.uptime || streamStatus?.obs_stream?.uptime || '00:00:00',
-                      quality: '1080p',
-                      isRecording: streamStatus?.obs_stream?.recording || false
-                    }}
-                    onError={(error) => {
-                      console.error('Erro no player do dashboard:', error);
-                      setPlayerError('Erro ao carregar player');
-                    }}
-                    onReady={() => {
-                      console.log('Player Clappr do dashboard pronto');
-                      setPlayerError(null);
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-              {/* Controle de Streaming - 1 coluna */}
-              <div className="lg:col-span-1 space-y-3">
-                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
-                  <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                    <Server className="h-4 w-4 mr-2" />
-                    Controle de Streaming
-                  </h3>
-
-                  {wowzaStatus && (
-                    <div className={`flex items-center justify-center space-x-2 px-3 py-2 rounded-lg mb-3 ${wowzaStatus.running ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
-                      <div className={`w-2 h-2 rounded-full ${wowzaStatus.running ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
-                      <span className="font-medium text-xs">
-                        {wowzaStatus.running ? 'Online' : 'Offline'}
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="space-y-2">
-                    <button
-                      onClick={handleWowzaStart}
-                      disabled={wowzaControlLoading || wowzaStatus?.running}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="Iniciar Servidor"
-                    >
-                      {wowzaControlLoading ? (
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Play className="h-4 w-4" />
-                      )}
-                      <span className="text-sm font-medium">Iniciar</span>
-                    </button>
-
-                    <button
-                      onClick={handleWowzaStop}
-                      disabled={wowzaControlLoading}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="Parar Servidor"
-                    >
-                      {wowzaControlLoading ? (
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Square className="h-4 w-4" />
-                      )}
-                      <span className="text-sm font-medium">Parar</span>
-                    </button>
-
-                    <button
-                      onClick={handleWowzaRestart}
-                      disabled={wowzaControlLoading}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="Reiniciar Servidor"
-                    >
-                      {wowzaControlLoading ? (
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <RefreshCw className="h-4 w-4" />
-                      )}
-                      <span className="text-sm font-medium">Reiniciar</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Iniciar Playlist */}
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border-2 border-blue-200">
-                  <h3 className="text-sm font-bold text-blue-900 mb-3 flex items-center">
-                    <Play className="h-4 w-4 mr-2" />
-                    Iniciar Playlist
-                  </h3>
-                  <select
-                    value={selectedPlaylist}
-                    onChange={(e) => setSelectedPlaylist(e.target.value)}
-                    disabled={startingPlaylist || streamStatus?.is_live}
-                    className="w-full px-3 py-2 mb-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <option value="">Selecione uma playlist</option>
-                    {playlists.map((playlist) => (
-                      <option key={playlist.id} value={playlist.id.toString()}>
-                        {playlist.nome} ({playlist.total_videos || 0} vídeos)
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={handleStartPlaylist}
-                    disabled={!selectedPlaylist || startingPlaylist || streamStatus?.is_live}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Iniciar transmissão da playlist selecionada"
-                  >
-                    {startingPlaylist ? (
-                      <RefreshCw className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Play className="h-4 w-4" />
-                    )}
-                    <span className="text-sm font-medium">
-                      {startingPlaylist ? 'Iniciando...' : 'Transmitir'}
-                    </span>
-                  </button>
-                </div>
-
-                {/* Botão Parar Stream - Separado e sempre ativo */}
-                <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4 border-2 border-red-200">
-                  <h3 className="text-sm font-bold text-red-900 mb-3 flex items-center">
-                    <AlertCircle className="h-4 w-4 mr-2" />
-                    Parar Transmissão
-                  </h3>
-                  <button
-                    onClick={handleStopTransmission}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
-                    title="Parar Transmissão de Playlist"
-                  >
-                    <Square className="h-4 w-4" />
-                    <span className="text-sm font-medium">Parar Playlist</span>
-                  </button>
-                </div>
-
-                {/* Status da Transmissão */}
-                {streamStatus?.is_live && (
-                  <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4 border border-red-200">
-                    <h4 className="text-xs font-bold text-red-900 mb-2 flex items-center">
-                      <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse mr-2"></div>
-                      TRANSMITINDO
-                    </h4>
-                    <div className="space-y-2 text-xs text-gray-700">
-                      <div className="flex items-center justify-between">
-                        <span className="flex items-center gap-1">
-                          <Users className="h-3 w-3" />
-                          Espectadores
-                        </span>
-                        <span className="font-bold">{streamStatus.transmission?.stats.viewers || streamStatus.obs_stream?.viewers || 0}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="flex items-center gap-1">
-                          <Zap className="h-3 w-3" />
-                          Bitrate
-                        </span>
-                        <span className="font-bold">{streamStatus.transmission?.stats.bitrate || streamStatus.obs_stream?.bitrate || 0} kbps</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          Tempo
-                        </span>
-                        <span className="font-bold">{streamStatus.transmission?.stats.uptime || streamStatus.obs_stream?.uptime || '00:00:00'}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Info da Transmissão - Abaixo do Player */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+          <div className="flex items-center space-x-3">
+            <h2 className="text-xl font-bold text-gray-900">Player de Transmissão</h2>
             {streamStatus?.is_live && (
-              <div className="p-5 border-t border-gray-200 bg-gray-50">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                    <h3 className="text-lg font-bold text-gray-900">
-                      {streamStatus.stream_type === 'obs' ? 'TRANSMISSÃO OBS ATIVA' :
-                       streamStatus.stream_type === 'playlist' ? 'PLAYLIST EM TRANSMISSÃO' :
-                       'TRANSMISSÃO ATIVA'}
-                    </h3>
-                  </div>
-                  <div className="flex items-center space-x-4 text-sm text-gray-700">
-                    <div className="flex items-center space-x-1">
-                      <Users className="h-4 w-4" />
-                      <span>{streamStatus.transmission?.stats.viewers || streamStatus.obs_stream?.viewers || 0}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Zap className="h-4 w-4" />
-                      <span>{streamStatus.transmission?.stats.bitrate || streamStatus.obs_stream?.bitrate || 0} kbps</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Clock className="h-4 w-4" />
-                      <span>{streamStatus.transmission?.stats.uptime || streamStatus.obs_stream?.uptime || '00:00:00'}</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="flex items-center space-x-2 px-3 py-1 bg-red-500 rounded-full shadow-lg">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                <span className="text-xs font-bold text-white">AO VIVO</span>
+              </div>
+            )}
+          </div>
+        </div>
 
-                {streamStatus.transmission && playlistName && streamStatus.stream_type === 'playlist' && (
-                  <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <p className="text-gray-700 text-sm">
-                      <strong className="text-gray-900">Playlist Atual:</strong> {playlistName.replace('📺 Playlist: ', '')}
-                    </p>
-                  </div>
-                )}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
+          {/* Player - 3 colunas - SEMPRE ATIVO */}
+          <div className="lg:col-span-3 bg-black rounded-lg overflow-hidden" style={{ paddingTop: '56.25%', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+              <ClapprStreamingPlayer
+                src={`http://stmv20.samcast.com.br/${userLogin}/${userLogin}/playlist.m3u8`}
+                title={playlistName || 'Transmissão'}
+                isLive={true}
+                autoplay={true}
+                controls={true}
+                className="w-full h-full"
+                streamStats={{
+                  viewers: streamStatus?.transmission?.stats.viewers || streamStatus?.obs_stream?.viewers || 0,
+                  bitrate: streamStatus?.transmission?.stats.bitrate || streamStatus?.obs_stream?.bitrate || 0,
+                  uptime: streamStatus?.transmission?.stats.uptime || streamStatus?.obs_stream?.uptime || '00:00:00',
+                  quality: '1080p',
+                  isRecording: streamStatus?.obs_stream?.recording || false
+                }}
+                onError={(error) => {
+                  console.error('Erro no player do dashboard:', error);
+                  setPlayerError('Erro ao carregar player');
+                }}
+                onReady={() => {
+                  console.log('Player Clappr do dashboard pronto');
+                  setPlayerError(null);
+                }}
+              />
+            </div>
+          </div>
+        </div>
 
-                {streamStatus.stream_type === 'playlist' && (
-                  <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <p className="text-gray-700 text-sm">
-                      <strong className="text-gray-900">Modo Automático:</strong> Os vídeos são reproduzidos em sequência conforme configurado na playlist.
-                    </p>
-                  </div>
-                )}
+        {/* Controle de Streaming - 1 coluna */}
+        <div className="lg:col-span-1 space-y-3">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
+            <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
+              <Server className="h-4 w-4 mr-2" />
+              Controle de Streaming
+            </h3>
+
+            {wowzaStatus && (
+              <div className={`flex items-center justify-center space-x-2 px-3 py-2 rounded-lg mb-3 ${wowzaStatus.running ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                <div className={`w-2 h-2 rounded-full ${wowzaStatus.running ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+                <span className="font-medium text-xs">
+                  {wowzaStatus.running ? 'Online' : 'Offline'}
+                </span>
               </div>
             )}
 
-            {/* Ações Rápidas - Abaixo do Player */}
-            <div className="p-6 border-t border-gray-200">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Ações Rápidas</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+            <div className="space-y-2">
               <button
-                onClick={() => window.location.href = '/dashboard/gerenciarvideos'}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
-                title="Gerenciar Vídeos"
+                onClick={handleWowzaStart}
+                disabled={wowzaControlLoading || wowzaStatus?.running}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Iniciar Servidor"
               >
-                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Video className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
-                </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Vídeos</span>
+                {wowzaControlLoading ? (
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Play className="h-4 w-4" />
+                )}
+                <span className="text-sm font-medium">Iniciar</span>
               </button>
 
               <button
-                onClick={() => window.location.href = '/dashboard/espectadores'}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
-                title="Ver Espectadores"
+                onClick={handleWowzaStop}
+                disabled={wowzaControlLoading}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Parar Servidor"
               >
-                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Users className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
-                </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Espectadores</span>
+                {wowzaControlLoading ? (
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Square className="h-4 w-4" />
+                )}
+                <span className="text-sm font-medium">Parar</span>
               </button>
 
               <button
-                onClick={() => window.location.href = '/dashboard/playlists'}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
-                title="Gerenciar Playlists"
+                onClick={handleWowzaRestart}
+                disabled={wowzaControlLoading}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Reiniciar Servidor"
               >
-                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Play className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
-                </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Playlists</span>
-              </button>
-
-              <button
-                onClick={() => window.location.href = '/dashboard/players'}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
-                title="Players Externos"
-              >
-                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Monitor className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
-                </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Players</span>
-              </button>
-
-              <button
-                onClick={() => window.location.href = '/dashboard/dados-conexao'}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
-                title="Dados de Conexão"
-              >
-                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Server className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
-                </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Conexão</span>
-              </button>
-
-              <button
-                onClick={() => window.location.href = '/dashboard/configuracoes'}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
-                title="Configurações"
-              >
-                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Settings className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
-                </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Configurações</span>
+                {wowzaControlLoading ? (
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-4 w-4" />
+                )}
+                <span className="text-sm font-medium">Reiniciar</span>
               </button>
             </div>
+          </div>
+
+          {/* Iniciar Playlist */}
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border-2 border-blue-200">
+            <h3 className="text-sm font-bold text-blue-900 mb-3 flex items-center">
+              <Play className="h-4 w-4 mr-2" />
+              Iniciar Playlist
+            </h3>
+            <select
+              value={selectedPlaylist}
+              onChange={(e) => setSelectedPlaylist(e.target.value)}
+              disabled={startingPlaylist || streamStatus?.is_live}
+              className="w-full px-3 py-2 mb-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="">Selecione uma playlist</option>
+              {playlists.map((playlist) => (
+                <option key={playlist.id} value={playlist.id.toString()}>
+                  {playlist.nome} ({playlist.total_videos || 0} vídeos)
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={handleStartPlaylist}
+              disabled={!selectedPlaylist || startingPlaylist || streamStatus?.is_live}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Iniciar transmissão da playlist selecionada"
+            >
+              {startingPlaylist ? (
+                <RefreshCw className="h-4 w-4 animate-spin" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
+              <span className="text-sm font-medium">
+                {startingPlaylist ? 'Iniciando...' : 'Transmitir'}
+              </span>
+            </button>
+          </div>
+
+          {/* Botão Parar Stream - Separado e sempre ativo */}
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4 border-2 border-red-200">
+            <h3 className="text-sm font-bold text-red-900 mb-3 flex items-center">
+              <AlertCircle className="h-4 w-4 mr-2" />
+              Parar Transmissão
+            </h3>
+            <button
+              onClick={handleStopTransmission}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+              title="Parar Transmissão de Playlist"
+            >
+              <Square className="h-4 w-4" />
+              <span className="text-sm font-medium">Parar Playlist</span>
+            </button>
+          </div>
+
+          {/* Status da Transmissão */}
+          {streamStatus?.is_live && (
+            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4 border border-red-200">
+              <h4 className="text-xs font-bold text-red-900 mb-2 flex items-center">
+                <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse mr-2"></div>
+                TRANSMITINDO
+              </h4>
+              <div className="space-y-2 text-xs text-gray-700">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1">
+                    <Users className="h-3 w-3" />
+                    Espectadores
+                  </span>
+                  <span className="font-bold">{streamStatus.transmission?.stats.viewers || streamStatus.obs_stream?.viewers || 0}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1">
+                    <Zap className="h-3 w-3" />
+                    Bitrate
+                  </span>
+                  <span className="font-bold">{streamStatus.transmission?.stats.bitrate || streamStatus.obs_stream?.bitrate || 0} kbps</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    Tempo
+                  </span>
+                  <span className="font-bold">{streamStatus.transmission?.stats.uptime || streamStatus.obs_stream?.uptime || '00:00:00'}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Info da Transmissão - Abaixo do Player */}
+      {streamStatus?.is_live && (
+        <div className="p-5 border-t border-gray-200 bg-gray-50">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-3">
+              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+              <h3 className="text-lg font-bold text-gray-900">
+                {streamStatus.stream_type === 'obs' ? 'TRANSMISSÃO OBS ATIVA' :
+                  streamStatus.stream_type === 'playlist' ? 'PLAYLIST EM TRANSMISSÃO' :
+                    'TRANSMISSÃO ATIVA'}
+              </h3>
+            </div>
+            <div className="flex items-center space-x-4 text-sm text-gray-700">
+              <div className="flex items-center space-x-1">
+                <Users className="h-4 w-4" />
+                <span>{streamStatus.transmission?.stats.viewers || streamStatus.obs_stream?.viewers || 0}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Zap className="h-4 w-4" />
+                <span>{streamStatus.transmission?.stats.bitrate || streamStatus.obs_stream?.bitrate || 0} kbps</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Clock className="h-4 w-4" />
+                <span>{streamStatus.transmission?.stats.uptime || streamStatus.obs_stream?.uptime || '00:00:00'}</span>
+              </div>
+            </div>
+          </div>
+
+          {streamStatus.transmission && playlistName && streamStatus.stream_type === 'playlist' && (
+            <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-gray-700 text-sm">
+                <strong className="text-gray-900">Playlist Atual:</strong> {playlistName.replace('📺 Playlist: ', '')}
+              </p>
+            </div>
+          )}
+
+          {streamStatus.stream_type === 'playlist' && (
+            <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-gray-700 text-sm">
+                <strong className="text-gray-900">Modo Automático:</strong> Os vídeos são reproduzidos em sequência conforme configurado na playlist.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Ações Rápidas - Abaixo do Player */}
+      <div className="p-6 border-t border-gray-200">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Ações Rápidas</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+          <button
+            onClick={() => window.location.href = '/dashboard/gerenciarvideos'}
+            className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
+            title="Gerenciar Vídeos"
+          >
+            <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+              <Video className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
+            </div>
+            <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Vídeos</span>
+          </button>
+
+          <button
+            onClick={() => window.location.href = '/dashboard/espectadores'}
+            className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
+            title="Ver Espectadores"
+          >
+            <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+              <Users className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
+            </div>
+            <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Espectadores</span>
+          </button>
+
+          <button
+            onClick={() => window.location.href = '/dashboard/playlists'}
+            className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
+            title="Gerenciar Playlists"
+          >
+            <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+              <Play className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
+            </div>
+            <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Playlists</span>
+          </button>
+
+          <button
+            onClick={() => window.location.href = '/dashboard/players'}
+            className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
+            title="Players Externos"
+          >
+            <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+              <Monitor className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
+            </div>
+            <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Players</span>
+          </button>
+
+          <button
+            onClick={() => window.location.href = '/dashboard/dados-conexao'}
+            className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
+            title="Dados de Conexão"
+          >
+            <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+              <Server className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
+            </div>
+            <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Conexão</span>
+          </button>
+
+          <button
+            onClick={() => window.location.href = '/dashboard/configuracoes'}
+            className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
+            title="Configurações"
+          >
+            <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+              <Settings className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
+            </div>
+            <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Configurações</span>
+          </button>
+        </div>
       </div>
 
       {/* Performance Metrics */}
@@ -954,7 +977,7 @@ const Dashboard: React.FC = () => {
               <span className="text-sm text-gray-700">Sistema inicializado</span>
               <span className="text-xs text-gray-500 ml-auto">Agora</span>
             </div>
-            
+
             {streamStatus?.is_live && (
               <div className="flex items-center space-x-3">
                 <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
@@ -964,7 +987,7 @@ const Dashboard: React.FC = () => {
                 </span>
               </div>
             )}
-            
+
             <div className="flex items-center space-x-3">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
               <span className="text-sm text-gray-700">Usuário conectado</span>
