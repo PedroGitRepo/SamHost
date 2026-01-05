@@ -585,7 +585,7 @@ async function syncFolderWithServer(folderId, userLogin, folderName, serverId, u
             // Inserir novo arquivo
             await db.execute(
               `INSERT INTO videos (
-                pasta, nome, tamanho, data_criacao, codigo_cliente,
+                pasta, nome, tamanho_arquivo, data_criacao, codigo_cliente,
                 status, data_atualizacao
               ) VALUES (?, ?, ?, NOW(), ?, 1, NOW())`,
               [folderId, fileName, fileSize, userId]
