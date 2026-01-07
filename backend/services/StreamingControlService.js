@@ -214,24 +214,47 @@ class StreamingControlService {
     /**
      * Recarregar playlists/agendamentos (ModuleSchedule)
      */
+    /**
+     * Recarregar playlists/agendamentos (ModuleSchedule)
+     * Ajustado para evitar o erro 'undefined'
+     */
     async recarregarPlaylistsAgendamentos(login) {
         try {
             const { streaming, server } = await this.getStreamingData(login);
             
-            // Nota: O endpoint de reloadSchedule geralmente roda numa porta específica (ex: 555) 
-            // ou via HTTP Provider. Ajuste a URL conforme seu Application.xml
+            // Certifique-se que o IP do servidor está acessível na porta 555
             const url = `http://${server.ip}:555/schedules?appName=${login}&action=reloadSchedule`;
             
-            const response = await this.client.fetch(url, { method: 'GET' });
-            const text = await response.text();
+            console.log(`[RELOAD] Tentando: ${url}`);
 
-            if (text.includes('DONE')) {
-                await this.logStreamingAction(streaming.codigo, 'Playlists recarregadas via HTTP');
-                return { success: true, message: 'Playlists recarregadas' };
+            const response = await this.client.fetch(url, { 
+                method: 'GET',
+                timeout: 5000 // Timeout de 5 segundos
+            });
+
+            if (!response) {
+                throw new Error('Sem resposta do servidor Wowza na porta 555');
             }
-            throw new Error('Wowza recusou o recarregamento');
+
+            const text = await response.text();
+            console.log(`[RELOAD] Resposta do Wowza: ${text}`);
+
+            if (text.includes('DONE') || text.includes('Success')) {
+                await this.logStreamingAction(streaming.codigo, 'Playlists recarregadas via HTTP');
+                return { success: true, message: 'Playlists recarregadas com sucesso' };
+            } else {
+                throw new Error(`Wowza retornou: ${text || 'Resposta Vazia'}`);
+            }
         } catch (error) {
-            return { success: false, error: error.message };
+            // Aqui evitamos o 'undefined' garantindo que sempre haja uma string
+            const errorMsg = error.message || error.toString() || 'Erro desconhecido na comunicação';
+            console.error(`❌ Erro ao recarregar playlists (${login}):`, errorMsg);
+            
+            return { 
+                success: false, 
+                message: 'Não foi possível recarregar as playlists', 
+                error: errorMsg 
+            };
         }
     }
 
