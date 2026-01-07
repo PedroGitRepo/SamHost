@@ -7,7 +7,7 @@ class StreamingControlService {
         // Configurações da API REST (Wowza 4.9.6+)
         this.wowzaPort = 8087;
         this.wowzaUser = 'admin'; // Recomenda-se usar process.env.WOWZA_USER
-        this.wowzaPass = 'wowza@123'; // Recomenda-se usar process.env.WOWZA_PASS
+        this.wowzaPass = 'Wowza@123'; // Recomenda-se usar process.env.WOWZA_PASS
         this.client = new DigestFetch(this.wowzaUser, this.wowzaPass, { algorithm: 'MD5' });
     }
 
