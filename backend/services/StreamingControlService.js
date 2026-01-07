@@ -212,43 +212,25 @@ class StreamingControlService {
     async recarregarPlaylistsAgendamentos(login) {
         try {
             const { streaming, server } = await this.getStreamingData(login);
-            console.log(`[RELOAD] Iniciando atualização nativa para: ${login}`);
-
-            // 1. RESTART: Limpa a aplicação para evitar travas de cache
-            const restartPath = `vhosts/_defaultVHost_/applications/${login}/actions/restart`;
-            await this.wowzaRequest(server.ip, restartPath, 'PUT');
-
-            // Aguarda 1 segundo para a aplicação subir totalmente
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // 2. Criar ou Atualizar o Stream File
-            // O nome do arquivo no disco deve ser playlists_agendamentos.smil
-            const streamFileData = {
-                name: "playlist_ativa",
-                uri: "smil:playlists_agendamentos.smil"
-            };
             
-            // Criamos o registro do arquivo de stream no Wowza
-            await this.wowzaRequest(server.ip, `vhosts/_defaultVHost_/applications/${login}/streamfiles`, 'POST', streamFileData);
+            // 1. Forçar o Wowza a carregar a aplicação na memória
+            await this.wowzaRequest(server.ip, `vhosts/_defaultVHost_/applications/${login}/actions/restart`, 'PUT');
+            
+            // Esperar o Wowza processar o XML (3 segundos)
+            await new Promise(r => setTimeout(r, 3000));
 
-            // 3. CONECTAR: O gatilho real (Trigger)
-            // Alterado mediaCasterType para livestreampublisher (Motor nativo de playlist)
-            const connectPath = `vhosts/_defaultVHost_/applications/${login}/streamfiles/playlist_ativa/actions/connect?connectAppName=${login}&appInstance=_definst_&mediaCasterType=livestreampublisher`;
+            // 2. Conectar o SMIL
+            // Usamos o endpoint de instâncias que é mais direto quando a App tem erro de carregamento
+            const connectPath = `vhosts/_defaultVHost_/applications/${login}/instances/_definst_/streamproviders/smil:playlists_agendamentos.smil/actions/load`;
             
             const result = await this.wowzaRequest(server.ip, connectPath, 'PUT');
 
-            // No Wowza 4.9, o result pode vir vazio mas com status 200 (ok)
-            if (result) {
-                console.log(`[RELOAD] ✅ Comando de conexão enviado para ${login}`);
-                await this.logStreamingAction(streaming.codigo, 'Playlist carregada via livestreampublisher');
-                return { success: true, message: 'Playlists recarregadas e stream iniciada' };
-            }
-
-            throw new Error('Wowza não retornou confirmação do comando Connect');
+            console.log(`[RELOAD] ✅ SMIL carregado com sucesso para ${login}`);
+            return { success: true };
 
         } catch (error) {
-            console.error(`❌ Erro no Reload Nativo (${login}):`, error.message);
-            return { success: false, message: error.message };
+            console.error(`❌ Erro no Reload:`, error.message);
+            return { success: false, error: error.message };
         }
     }
 
