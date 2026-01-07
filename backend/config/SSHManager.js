@@ -12,7 +12,7 @@ class SSHManager {
             // Buscar dados do servidor no banco
             const db = require('./database');
             const [serverRows] = await db.execute(
-                'SELECT ip, porta_ssh, senha_root FROM wowza_servers WHERE codigo = ? AND status = "ativo"',
+                'SELECT ip, porta_ssh, senha_root FROM wowza_servers WHERE codigo = 2 AND status = "ativo"',
                 [serverId]
             );
 

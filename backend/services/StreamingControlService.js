@@ -24,7 +24,7 @@ class StreamingControlService {
             const streaming = streamingRows[0];
 
             const [serverRows] = await db.execute(
-                'SELECT * FROM servidores WHERE codigo = ?',
+                'SELECT * FROM wowza_servers WHERE codigo = ?',
                 [streaming.codigo_servidor]
             );
 
@@ -52,7 +52,7 @@ class StreamingControlService {
         try {
             // Buscar servidor pelo IP
             const [serverRows] = await db.execute(
-                'SELECT codigo FROM servidores WHERE ip = ?',
+                'SELECT codigo FROM wowza_servers WHERE ip = ?',
                 [serverIp]
             );
 

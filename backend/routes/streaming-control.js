@@ -625,7 +625,7 @@ router.get('/list', async (req, res) => {
         const [streamings] = await db.execute(
             `SELECT s.*, srv.nome as servidor_nome, srv.status as servidor_status
              FROM streamings s
-             LEFT JOIN servidores srv ON s.codigo_servidor = srv.codigo
+             LEFT JOIN wowza_servers srv ON s.codigo_servidor = srv.codigo
              WHERE s.codigo_cliente = ?
              ORDER BY s.login`,
             [userId]
