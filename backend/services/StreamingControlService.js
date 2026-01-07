@@ -10,8 +10,8 @@ class StreamingControlService {
         return {
             baseURL: `http://${server.ip}:${server.api_port || 8087}/v2`,
             auth: {
-                username: process.env.WOWZA_API_USER || 'admin',
-                password: process.env.WOWZA_API_PASS || 'SENHA_REAL_AQUI'
+                username: 'admin',
+                password: 'Wowza@123'
             },
             headers: {
                 'Accept': 'application/json',
