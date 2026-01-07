@@ -4,19 +4,13 @@ const DigestFetch = require('digest-fetch');
 
 class StreamingControlService {
     constructor() {
-        // Configurações da API REST (Wowza 4.9.6+)
         this.wowzaPort = 8087;
-        this.wowzaUser = 'admin'; 
-        this.wowzaPass = 'Wowza@123'; 
-        this.client = new DigestFetch(this.wowzaUser, this.wowzaPass, { algorithm: 'MD5' });
-        
-        // Caminho padrão do Wowza no servidor novo
-        this.wowzaPath = '/usr/local/WowzaStreamingEngine';
+        this.wowzaUser = 'admin';
+        this.wowzaPass = 'Wowza@123';
+        // Criamos o Token Base64 para autenticação Basic
+        this.authHeader = 'Basic ' + Buffer.from(`${this.wowzaUser}:${this.wowzaPass}`).toString('base64');
     }
 
-    /**
-     * Helper genérico para chamadas REST API ao Wowza
-     */
     async wowzaRequest(serverIp, path, method = 'GET', body = null) {
         const url = `http://${serverIp}:${this.wowzaPort}/v2/servers/_defaultServer_/${path}`;
         const options = {
@@ -24,21 +18,25 @@ class StreamingControlService {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': this.authHeader // Enviando o login fixo aqui
             }
         };
         if (body) options.body = JSON.stringify(body);
 
         try {
-            const response = await this.client.fetch(url, options);
-            if (response.status === 404) return null;
-            if (!response.ok) throw new Error(`Wowza API Error: ${response.status}`);
+            const fetch = require('node-fetch'); // Usando fetch padrão
+            const response = await fetch(url, options);
+
+            if (response.status === 401) throw new Error("401 Unauthorized - Verifique admin.password");
+            if (!response.ok) return { success: false, status: response.status };
+
             return await response.json();
         } catch (error) {
-            console.error(`Erro na requisição Wowza (${path}):`, error.message);
-            throw error;
+            console.error(`Erro Wowza: ${error.message}`);
+            return { success: false, error: error.message };
         }
     }
-
+    
     /**
      * Buscar dados do streaming e servidor no banco de dados
      */
@@ -185,18 +183,18 @@ class StreamingControlService {
             const totalConnections = monitoring ? monitoring.totalConnections : 0;
 
             if (isLive) {
-                return { 
-                    status: 'aovivo', 
-                    message: 'Streaming ao vivo', 
-                    audiencia: totalConnections 
+                return {
+                    status: 'aovivo',
+                    message: 'Streaming ao vivo',
+                    audiencia: totalConnections
                 };
             }
 
             if (monitoring && monitoring.uptime > 0) {
-                return { 
-                    status: 'ligado', 
-                    message: 'Streaming ligado (sem fonte)', 
-                    audiencia: totalConnections 
+                return {
+                    status: 'ligado',
+                    message: 'Streaming ligado (sem fonte)',
+                    audiencia: totalConnections
                 };
             }
 
@@ -214,9 +212,9 @@ class StreamingControlService {
     async recarregarPlaylistsAgendamentos(login) {
         try {
             const { streaming, server } = await this.getStreamingData(login);
-            
+
             console.log(`[RELOAD] Reiniciando aplicação para atualizar playlist: ${login}`);
-            
+
             // O restart força o Wowza a reler o arquivo SMIL e agendamentos
             const path = `vhosts/_defaultVHost_/applications/${login}/actions/restart`;
             const result = await this.wowzaRequest(server.ip, path, 'PUT');
