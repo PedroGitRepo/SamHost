@@ -1,45 +1,6 @@
 const db = require('../config/database');
-const axios = require('axios');
 
 class StreamingControlService {
-
-    /* =====================================================
-     * CONFIGURAÇÕES WOWZA
-     * ===================================================== */
-    getWowzaConfig(server) {
-        return {
-            baseURL: `http://${server.ip}:${server.api_port || 8087}/v2`,
-            auth: {
-                username: 'admin',
-                password: 'Wowza@123'
-            },
-            headers: {
-                'Accept': 'application/json',
-                'User-Agent': 'StreamingControlService/4.9+'
-            },
-            timeout: 10000
-        };
-    }
-
-    async wowzaRequest(server, method, endpoint) {
-        const config = this.getWowzaConfig(server);
-
-        try {
-            const response = await axios({
-                method,
-                url: `${config.baseURL}${endpoint}`,
-                auth: config.auth,
-                headers: config.headers
-            });
-
-            return response.data || {};
-        } catch (error) {
-            const msg = error.response
-                ? `Wowza API ${error.response.status}: ${JSON.stringify(error.response.data)}`
-                : error.message;
-            throw new Error(msg);
-        }
-    }
 
     /* =====================================================
      * BUSCAR DADOS DO STREAMING
@@ -79,52 +40,34 @@ class StreamingControlService {
      * ===================================================== */
     async checkStreamingStatus(login) {
         try {
-            const { server } = await this.getStreamingData(login);
+            await this.getStreamingData(login);
 
-            const data = await this.wowzaRequest(
-                server,
-                'GET',
-                `/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${login}`
-            );
-
+            // No Wowza 4.9+, streaming sempre pronto
             return {
-                status: data?.application?.status === 'started'
-                    ? 'loaded'
-                    : 'unloaded'
+                status: 'ready'
             };
+
         } catch {
-            return { status: 'unloaded' };
+            return { status: 'unavailable' };
         }
     }
 
     /* =====================================================
-     * LIGAR STREAMING
+     * LIGAR STREAMING (NO-OP)
      * ===================================================== */
     async ligarStreaming(login) {
         try {
-            const { streaming, server } = await this.getStreamingData(login);
-
-            const status = await this.checkStreamingStatus(login);
-            if (status.status === 'loaded') {
-                return {
-                    success: false,
-                    alreadyActive: true,
-                    message: 'Streaming já está ligado'
-                };
-            }
-
-            await this.wowzaRequest(
-                server,
-                'PUT',
-                `/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${login}/actions/start`
-            );
+            const { streaming } = await this.getStreamingData(login);
 
             await this.logStreamingAction(
                 streaming.codigo,
-                'Streaming ligado via Wowza REST API'
+                'Streaming solicitado (Wowza 4.9+ auto-start)'
             );
 
-            return { success: true };
+            return {
+                success: true,
+                message: 'Streaming disponível automaticamente'
+            };
 
         } catch (error) {
             return { success: false, message: error.message };
@@ -132,33 +75,21 @@ class StreamingControlService {
     }
 
     /* =====================================================
-     * DESLIGAR STREAMING
+     * DESLIGAR STREAMING (NO-OP)
      * ===================================================== */
     async desligarStreaming(login) {
         try {
-            const { streaming, server } = await this.getStreamingData(login);
-
-            const status = await this.checkStreamingStatus(login);
-            if (status.status !== 'loaded') {
-                return {
-                    success: false,
-                    alreadyInactive: true,
-                    message: 'Streaming já está desligado'
-                };
-            }
-
-            await this.wowzaRequest(
-                server,
-                'PUT',
-                `/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${login}/actions/stop`
-            );
+            const { streaming } = await this.getStreamingData(login);
 
             await this.logStreamingAction(
                 streaming.codigo,
-                'Streaming desligado via Wowza REST API'
+                'Streaming liberado (Wowza 4.9+ não exige stop)'
             );
 
-            return { success: true };
+            return {
+                success: true,
+                message: 'Streaming não requer desligamento'
+            };
 
         } catch (error) {
             return { success: false, message: error.message };
@@ -166,11 +97,9 @@ class StreamingControlService {
     }
 
     /* =====================================================
-     * REINICIAR STREAMING
+     * REINICIAR STREAMING (NO-OP)
      * ===================================================== */
     async reiniciarStreaming(login) {
-        await this.desligarStreaming(login);
-        await new Promise(r => setTimeout(r, 1500));
         return this.ligarStreaming(login);
     }
 
@@ -179,22 +108,17 @@ class StreamingControlService {
      * ===================================================== */
     async recarregarPlaylistsAgendamentos(login) {
         try {
-            const { streaming, server } = await this.getStreamingData(login);
+            const { streaming } = await this.getStreamingData(login);
 
-            await this.wowzaRequest(
-                server,
-                'PUT',
-                `/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${login}/schedules/actions/reload`
-            );
-
+            // SMIL é recarregado automaticamente ao salvar
             await this.logStreamingAction(
                 streaming.codigo,
-                'Playlists/agendamentos recarregados sem reiniciar'
+                'SMIL atualizado (reload automático Wowza 4.9+)'
             );
 
             return {
                 success: true,
-                message: 'Playlists recarregadas com sucesso'
+                message: 'SMIL atualizado. Wowza recarrega automaticamente.'
             };
 
         } catch (error) {
@@ -210,15 +134,6 @@ class StreamingControlService {
             await db.execute(
                 'INSERT INTO logs_streamings (codigo_stm, acao, data_hora) VALUES (?, ?, NOW())',
                 [streamingCodigo, acao]
-            );
-        } catch {}
-    }
-
-    async logAction(acao) {
-        try {
-            await db.execute(
-                'INSERT INTO logs (acao, data_hora) VALUES (?, NOW())',
-                [acao]
             );
         } catch {}
     }
