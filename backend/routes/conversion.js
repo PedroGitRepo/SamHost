@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../config/database');
 const authMiddleware = require('../middlewares/authMiddleware');
 const SSHManager = require('../config/SSHManager');
+const path = require('path');
 
 const router = express.Router();
 
