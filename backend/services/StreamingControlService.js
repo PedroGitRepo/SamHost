@@ -212,28 +212,38 @@ class StreamingControlService {
     async recarregarPlaylistsAgendamentos(login) {
         try {
             const { streaming, server } = await this.getStreamingData(login);
+            console.log(`[RELOAD] Iniciando atualização nativa para: ${login}`);
 
-            console.log(`[RELOAD] Solicitando restart da aplicação: ${login}`);
+            // 1. RESTART: Limpa a aplicação
+            const restartPath = `vhosts/_defaultVHost_/applications/${login}/actions/restart`;
+            await this.wowzaRequest(server.ip, restartPath, 'PUT');
 
-            const path = `vhosts/_defaultVHost_/applications/${login}/actions/restart`;
-            const result = await this.wowzaRequest(server.ip, path, 'PUT');
+            // 2. Criar ou Atualizar o Stream File nativo
+            // O Wowza precisa que um "Stream File" aponte para o SMIL
+            const streamFileData = {
+                name: "playlist_ativa",
+                uri: "smil:playlists_agendamentos.smil"
+            };
+            
+            // Tenta criar o stream file (ignora se já existir)
+            await this.wowzaRequest(server.ip, `vhosts/_defaultVHost_/applications/${login}/streamfiles`, 'POST', streamFileData);
 
-            // Ajuste aqui: Se o result existir ou se a API não retornou erro (result.success não é obrigatório em todas as versões)
-            if (result && (result.success === true || result.success === undefined)) {
-                console.log(`[RELOAD] Comando enviado com sucesso para ${login}`);
-                await this.logStreamingAction(streaming.codigo, 'Playlist atualizada via Restart API');
-                return { success: true, message: 'Playlists recarregadas com sucesso' };
+            // 3. CONECTAR: O gatilho que faz o vídeo começar a rodar
+            // Isso substitui o antigo comando da porta 555
+            const connectPath = `vhosts/_defaultVHost_/applications/${login}/streamfiles/playlist_ativa/actions/connect?connectAppName=${login}&appInstance=_definst_&mediaCasterType=smil`;
+            const result = await this.wowzaRequest(server.ip, connectPath, 'PUT');
+
+            if (result) {
+                console.log(`[RELOAD] ✅ Transmissão conectada com sucesso para ${login}`);
+                await this.logStreamingAction(streaming.codigo, 'Playlist carregada via StreamFile Connect');
+                return { success: true, message: 'Playlists recarregadas e stream iniciada' };
             }
 
-            throw new Error(result.error || 'Wowza não confirmou o reinício');
+            throw new Error('Wowza não respondeu ao comando de conexão');
+
         } catch (error) {
-            const errorMsg = error.message || 'Erro desconhecido na API';
-            console.error(`❌ Erro ao recarregar playlists (${login}):`, errorMsg);
-            return {
-                success: false,
-                message: 'Não foi possível atualizar a playlist',
-                error: errorMsg
-            };
+            console.error(`❌ Erro no Reload Nativo (${login}):`, error.message);
+            return { success: false, message: error.message };
         }
     }
 
