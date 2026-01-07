@@ -1,46 +1,44 @@
 const db = require('../config/database');
-const DigestFetch = require('digest-fetch');
+const axios = require('axios');
 
 class StreamingControlService {
 
     /* =====================================================
      * CONFIGURAÇÕES WOWZA
      * ===================================================== */
-    getWowzaClient(server) {
-        return new DigestFetch(
-            process.env.WOWZA_API_USER || 'admin',
-            process.env.WOWZA_API_PASS || 'admin',
-            { algorithm: 'MD5' }
-        );
-    }
-
-    getWowzaBaseUrl(server) {
-        const host = server.ip;
-        const port = server.api_port || 8087;
-        return `http://${host}:${port}/v2`;
-    }
-
-    async wowzaRequest(server, method, endpoint) {
-        const client = this.getWowzaClient(server);
-        const url = `${this.getWowzaBaseUrl(server)}${endpoint}`;
-
-        const response = await client.fetch(url, {
-            method,
+    getWowzaConfig(server) {
+        return {
+            baseURL: `http://${server.ip}:${server.api_port || 8087}/v2`,
+            auth: {
+                username: process.env.WOWZA_API_USER || 'admin',
+                password: process.env.WOWZA_API_PASS || 'SENHA_REAL_AQUI'
+            },
             headers: {
                 'Accept': 'application/json',
                 'User-Agent': 'StreamingControlService/4.9+'
-            }
-        });
+            },
+            timeout: 10000
+        };
+    }
 
-        const text = await response.text();
+    async wowzaRequest(server, method, endpoint) {
+        const config = this.getWowzaConfig(server);
 
-        if (!response.ok) {
-            throw new Error(
-                `Wowza API ${response.status}: ${text}`
-            );
+        try {
+            const response = await axios({
+                method,
+                url: `${config.baseURL}${endpoint}`,
+                auth: config.auth,
+                headers: config.headers
+            });
+
+            return response.data || {};
+        } catch (error) {
+            const msg = error.response
+                ? `Wowza API ${error.response.status}: ${JSON.stringify(error.response.data)}`
+                : error.message;
+            throw new Error(msg);
         }
-
-        return text ? JSON.parse(text) : {};
     }
 
     /* =====================================================
@@ -89,12 +87,11 @@ class StreamingControlService {
                 `/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${login}`
             );
 
-            if (data?.application?.status === 'started') {
-                return { status: 'loaded' };
-            }
-
-            return { status: 'unloaded' };
-
+            return {
+                status: data?.application?.status === 'started'
+                    ? 'loaded'
+                    : 'unloaded'
+            };
         } catch {
             return { status: 'unloaded' };
         }
@@ -130,10 +127,7 @@ class StreamingControlService {
             return { success: true };
 
         } catch (error) {
-            return {
-                success: false,
-                message: error.message
-            };
+            return { success: false, message: error.message };
         }
     }
 
@@ -167,10 +161,7 @@ class StreamingControlService {
             return { success: true };
 
         } catch (error) {
-            return {
-                success: false,
-                message: error.message
-            };
+            return { success: false, message: error.message };
         }
     }
 
@@ -178,16 +169,9 @@ class StreamingControlService {
      * REINICIAR STREAMING
      * ===================================================== */
     async reiniciarStreaming(login) {
-        try {
-            await this.desligarStreaming(login);
-            await new Promise(r => setTimeout(r, 1500));
-            return await this.ligarStreaming(login);
-        } catch (error) {
-            return {
-                success: false,
-                message: error.message
-            };
-        }
+        await this.desligarStreaming(login);
+        await new Promise(r => setTimeout(r, 1500));
+        return this.ligarStreaming(login);
     }
 
     /* =====================================================
@@ -214,10 +198,7 @@ class StreamingControlService {
             };
 
         } catch (error) {
-            return {
-                success: false,
-                message: error.message
-            };
+            return { success: false, message: error.message };
         }
     }
 
