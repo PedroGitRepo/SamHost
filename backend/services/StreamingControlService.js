@@ -36,7 +36,7 @@ class StreamingControlService {
             return { success: false, error: error.message };
         }
     }
-    
+
     /**
      * Buscar dados do streaming e servidor no banco de dados
      */
@@ -213,20 +213,27 @@ class StreamingControlService {
         try {
             const { streaming, server } = await this.getStreamingData(login);
 
-            console.log(`[RELOAD] Reiniciando aplicação para atualizar playlist: ${login}`);
+            console.log(`[RELOAD] Solicitando restart da aplicação: ${login}`);
 
-            // O restart força o Wowza a reler o arquivo SMIL e agendamentos
             const path = `vhosts/_defaultVHost_/applications/${login}/actions/restart`;
             const result = await this.wowzaRequest(server.ip, path, 'PUT');
 
-            if (result && result.success) {
+            // Ajuste aqui: Se o result existir ou se a API não retornou erro (result.success não é obrigatório em todas as versões)
+            if (result && (result.success === true || result.success === undefined)) {
+                console.log(`[RELOAD] Comando enviado com sucesso para ${login}`);
                 await this.logStreamingAction(streaming.codigo, 'Playlist atualizada via Restart API');
                 return { success: true, message: 'Playlists recarregadas com sucesso' };
             }
-            throw new Error('Wowza API não confirmou o reinício');
+
+            throw new Error(result.error || 'Wowza não confirmou o reinício');
         } catch (error) {
-            console.error(`❌ Erro ao recarregar playlists (${login}):`, error.message);
-            return { success: false, error: error.message };
+            const errorMsg = error.message || 'Erro desconhecido na API';
+            console.error(`❌ Erro ao recarregar playlists (${login}):`, errorMsg);
+            return {
+                success: false,
+                message: 'Não foi possível atualizar a playlist',
+                error: errorMsg
+            };
         }
     }
 
