@@ -214,32 +214,37 @@ class StreamingControlService {
             const { streaming, server } = await this.getStreamingData(login);
             console.log(`[RELOAD] Iniciando atualização nativa para: ${login}`);
 
-            // 1. RESTART: Limpa a aplicação
+            // 1. RESTART: Limpa a aplicação para evitar travas de cache
             const restartPath = `vhosts/_defaultVHost_/applications/${login}/actions/restart`;
             await this.wowzaRequest(server.ip, restartPath, 'PUT');
 
-            // 2. Criar ou Atualizar o Stream File nativo
-            // O Wowza precisa que um "Stream File" aponte para o SMIL
+            // Aguarda 1 segundo para a aplicação subir totalmente
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // 2. Criar ou Atualizar o Stream File
+            // O nome do arquivo no disco deve ser playlists_agendamentos.smil
             const streamFileData = {
                 name: "playlist_ativa",
                 uri: "smil:playlists_agendamentos.smil"
             };
             
-            // Tenta criar o stream file (ignora se já existir)
+            // Criamos o registro do arquivo de stream no Wowza
             await this.wowzaRequest(server.ip, `vhosts/_defaultVHost_/applications/${login}/streamfiles`, 'POST', streamFileData);
 
-            // 3. CONECTAR: O gatilho que faz o vídeo começar a rodar
-            // Isso substitui o antigo comando da porta 555
-            const connectPath = `vhosts/_defaultVHost_/applications/${login}/streamfiles/playlist_ativa/actions/connect?connectAppName=${login}&appInstance=_definst_&mediaCasterType=smil`;
+            // 3. CONECTAR: O gatilho real (Trigger)
+            // Alterado mediaCasterType para livestreampublisher (Motor nativo de playlist)
+            const connectPath = `vhosts/_defaultVHost_/applications/${login}/streamfiles/playlist_ativa/actions/connect?connectAppName=${login}&appInstance=_definst_&mediaCasterType=livestreampublisher`;
+            
             const result = await this.wowzaRequest(server.ip, connectPath, 'PUT');
 
+            // No Wowza 4.9, o result pode vir vazio mas com status 200 (ok)
             if (result) {
-                console.log(`[RELOAD] ✅ Transmissão conectada com sucesso para ${login}`);
-                await this.logStreamingAction(streaming.codigo, 'Playlist carregada via StreamFile Connect');
+                console.log(`[RELOAD] ✅ Comando de conexão enviado para ${login}`);
+                await this.logStreamingAction(streaming.codigo, 'Playlist carregada via livestreampublisher');
                 return { success: true, message: 'Playlists recarregadas e stream iniciada' };
             }
 
-            throw new Error('Wowza não respondeu ao comando de conexão');
+            throw new Error('Wowza não retornou confirmação do comando Connect');
 
         } catch (error) {
             console.error(`❌ Erro no Reload Nativo (${login}):`, error.message);
