@@ -6,9 +6,12 @@ class StreamingControlService {
     constructor() {
         // Configurações da API REST (Wowza 4.9.6+)
         this.wowzaPort = 8087;
-        this.wowzaUser = 'admin'; // Recomenda-se usar process.env.WOWZA_USER
-        this.wowzaPass = 'Wowza@123'; // Recomenda-se usar process.env.WOWZA_PASS
+        this.wowzaUser = 'admin'; 
+        this.wowzaPass = 'Wowza@123'; 
         this.client = new DigestFetch(this.wowzaUser, this.wowzaPass, { algorithm: 'MD5' });
+        
+        // Caminho padrão do Wowza no servidor novo
+        this.wowzaPath = '/usr/local/WowzaStreamingEngine';
     }
 
     /**
@@ -54,14 +57,11 @@ class StreamingControlService {
     }
 
     /**
-     * Verificar status básico (Substitui JMX getApplicationInstanceInfo)
+     * Verificar status básico
      */
     async checkStreamingStatus(serverIp, serverPassword, login) {
         try {
-            // Verifica estatísticas em tempo real da aplicação
             const data = await this.wowzaRequest(serverIp, `vhosts/_defaultVHost_/applications/${login}/monitoring/current`);
-
-            // Se a aplicação responder e tiver uptime, está "loaded"
             if (data && data.uptime > 0) {
                 return { status: 'loaded' };
             }
@@ -72,13 +72,11 @@ class StreamingControlService {
     }
 
     /**
-     * Ligar streaming (Substitui startAppInstance)
+     * Ligar streaming
      */
     async ligarStreaming(login) {
         try {
             const { streaming, server } = await this.getStreamingData(login);
-
-            // Na REST API, o restart força o carregamento da App
             const result = await this.wowzaRequest(server.ip, `vhosts/_defaultVHost_/applications/${login}/actions/restart`, 'PUT');
 
             if (result && result.success) {
@@ -92,7 +90,7 @@ class StreamingControlService {
     }
 
     /**
-     * Desligar streaming (Substitui shutdownAppInstance)
+     * Desligar streaming
      */
     async desligarStreaming(login) {
         try {
@@ -135,14 +133,14 @@ class StreamingControlService {
             if (!userType || (userType !== 'admin' && userType !== 'revenda')) throw new Error('Acesso não autorizado');
             const { streaming, server } = await this.getStreamingData(login);
 
-            // Bloqueio de arquivo (SSH necessário)
-            await SSHManager.executeCommand(server.codigo, `mv -f /usr/local/WowzaMediaServer/conf/${streaming.login}/Application.xml /usr/local/WowzaMediaServer/conf/${streaming.login}/Application.xml.lock`);
+            // Bloqueio de arquivo ajustado para o novo caminho WowzaStreamingEngine
+            await SSHManager.executeCommand(server.codigo, `mv -f ${this.wowzaPath}/conf/${streaming.usuario}/Application.xml ${this.wowzaPath}/conf/${streaming.usuario}/Application.xml.lock`);
 
             // Desliga a instância via API
             await this.desligarStreaming(login);
 
             await db.execute('UPDATE streamings SET status = "2" WHERE codigo = ?', [streaming.codigo]);
-            await this.logAction(`[${streaming.login}] Streaming bloqueado via Admin`);
+            await this.logAction(`[${streaming.usuario}] Streaming bloqueado via Admin`);
 
             return { success: true, message: 'Streaming bloqueado com sucesso' };
         } catch (error) {
@@ -158,14 +156,14 @@ class StreamingControlService {
             if (!userType || (userType !== 'admin' && userType !== 'revenda')) throw new Error('Acesso não autorizado');
             const { streaming, server } = await this.getStreamingData(login);
 
-            // Desbloqueio de arquivo (SSH necessário)
-            await SSHManager.executeCommand(server.codigo, `mv -f /usr/local/WowzaMediaServer/conf/${streaming.login}/Application.xml.lock /usr/local/WowzaMediaServer/conf/${streaming.login}/Application.xml`);
+            // Desbloqueio de arquivo ajustado para o novo caminho WowzaStreamingEngine
+            await SSHManager.executeCommand(server.codigo, `mv -f ${this.wowzaPath}/conf/${streaming.usuario}/Application.xml.lock ${this.wowzaPath}/conf/${streaming.usuario}/Application.xml`);
 
             // Inicia via API
             await this.ligarStreaming(login);
 
             await db.execute('UPDATE streamings SET status = "1" WHERE codigo = ?', [streaming.codigo]);
-            await this.logAction(`[${streaming.login}] Streaming desbloqueado via Admin`);
+            await this.logAction(`[${streaming.usuario}] Streaming desbloqueado via Admin`);
 
             return { success: true, message: 'Streaming desbloqueado com sucesso' };
         } catch (error) {
@@ -180,27 +178,25 @@ class StreamingControlService {
         try {
             const { streaming, server } = await this.getStreamingData(login);
 
-            // 1. Verificar se há fonte de vídeo ativa (Incoming Streams)
             const incoming = await this.wowzaRequest(server.ip, `vhosts/_defaultVHost_/applications/${login}/instances/_definst_/incomingstreams`);
             const isLive = incoming && incoming.incomingStreams && incoming.incomingStreams.length > 0;
 
-            // 2. Buscar total de conexões (Audiência)
             const monitoring = await this.wowzaRequest(server.ip, `vhosts/_defaultVHost_/applications/${login}/monitoring/current`);
             const totalConnections = monitoring ? monitoring.totalConnections : 0;
 
             if (isLive) {
-                return {
-                    status: 'aovivo',
-                    message: 'Streaming ao vivo',
-                    audiencia: totalConnections
+                return { 
+                    status: 'aovivo', 
+                    message: 'Streaming ao vivo', 
+                    audiencia: totalConnections 
                 };
             }
 
             if (monitoring && monitoring.uptime > 0) {
-                return {
-                    status: 'ligado',
-                    message: 'Streaming ligado (sem fonte)',
-                    audiencia: totalConnections
+                return { 
+                    status: 'ligado', 
+                    message: 'Streaming ligado (sem fonte)', 
+                    audiencia: totalConnections 
                 };
             }
 
@@ -212,47 +208,27 @@ class StreamingControlService {
     }
 
     /**
-     * Recarregar playlists/agendamentos (ModuleSchedule)
-     */
-    /**
-     * Recarregar playlists/agendamentos (ModuleSchedule)
-     * Ajustado para evitar o erro 'undefined'
+     * Recarregar playlists/agendamentos
+     * Alterado para usar Restart via API (Porta 8087) por falta do plugin da porta 555
      */
     async recarregarPlaylistsAgendamentos(login) {
         try {
             const { streaming, server } = await this.getStreamingData(login);
-
-            // Log do que está acontecendo
-            console.log(`[RELOAD] Solicitando restart da aplicação para atualização de playlist: ${login}`);
-
-            // Usamos a porta 8087 (REST API) que já está funcionando no seu Wowza 4.9.6
-            // O endpoint 'actions/restart' faz com que o Wowza recarregue as configurações e playlists
+            
+            console.log(`[RELOAD] Reiniciando aplicação para atualizar playlist: ${login}`);
+            
+            // O restart força o Wowza a reler o arquivo SMIL e agendamentos
             const path = `vhosts/_defaultVHost_/applications/${login}/actions/restart`;
-
             const result = await this.wowzaRequest(server.ip, path, 'PUT');
 
-            // Na REST API do Wowza, o sucesso retorna um objeto com 'success: true'
             if (result && result.success) {
-                console.log(`[RELOAD] Sucesso: Aplicação ${login} reiniciada.`);
                 await this.logStreamingAction(streaming.codigo, 'Playlist atualizada via Restart API');
-
-                return {
-                    success: true,
-                    message: 'Playlists recarregadas com sucesso (Aplicação reiniciada)'
-                };
-            } else {
-                throw new Error('O Wowza não confirmou o reinício da aplicação via API.');
+                return { success: true, message: 'Playlists recarregadas com sucesso' };
             }
-
+            throw new Error('Wowza API não confirmou o reinício');
         } catch (error) {
-            const errorMsg = error.message || 'Erro ao conectar na REST API do Wowza';
-            console.error(`❌ Erro ao recarregar playlists (${login}):`, errorMsg);
-
-            return {
-                success: false,
-                message: 'Não foi possível atualizar a playlist via API',
-                error: errorMsg
-            };
+            console.error(`❌ Erro ao recarregar playlists (${login}):`, error.message);
+            return { success: false, error: error.message };
         }
     }
 
