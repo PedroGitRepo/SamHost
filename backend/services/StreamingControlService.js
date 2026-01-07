@@ -60,7 +60,7 @@ class StreamingControlService {
         try {
             // Verifica estatísticas em tempo real da aplicação
             const data = await this.wowzaRequest(serverIp, `vhosts/_defaultVHost_/applications/${login}/monitoring/current`);
-            
+
             // Se a aplicação responder e tiver uptime, está "loaded"
             if (data && data.uptime > 0) {
                 return { status: 'loaded' };
@@ -77,7 +77,7 @@ class StreamingControlService {
     async ligarStreaming(login) {
         try {
             const { streaming, server } = await this.getStreamingData(login);
-            
+
             // Na REST API, o restart força o carregamento da App
             const result = await this.wowzaRequest(server.ip, `vhosts/_defaultVHost_/applications/${login}/actions/restart`, 'PUT');
 
@@ -189,18 +189,18 @@ class StreamingControlService {
             const totalConnections = monitoring ? monitoring.totalConnections : 0;
 
             if (isLive) {
-                return { 
-                    status: 'aovivo', 
-                    message: 'Streaming ao vivo', 
-                    audiencia: totalConnections 
+                return {
+                    status: 'aovivo',
+                    message: 'Streaming ao vivo',
+                    audiencia: totalConnections
                 };
             }
 
             if (monitoring && monitoring.uptime > 0) {
-                return { 
-                    status: 'ligado', 
-                    message: 'Streaming ligado (sem fonte)', 
-                    audiencia: totalConnections 
+                return {
+                    status: 'ligado',
+                    message: 'Streaming ligado (sem fonte)',
+                    audiencia: totalConnections
                 };
             }
 
@@ -221,39 +221,37 @@ class StreamingControlService {
     async recarregarPlaylistsAgendamentos(login) {
         try {
             const { streaming, server } = await this.getStreamingData(login);
-            
-            // Certifique-se que o IP do servidor está acessível na porta 555
-            const url = `http://${server.ip}:555/schedules?appName=${login}&action=reloadSchedule`;
-            
-            console.log(`[RELOAD] Tentando: ${url}`);
 
-            const response = await this.client.fetch(url, { 
-                method: 'GET',
-                timeout: 5000 // Timeout de 5 segundos
-            });
+            // Log do que está acontecendo
+            console.log(`[RELOAD] Solicitando restart da aplicação para atualização de playlist: ${login}`);
 
-            if (!response) {
-                throw new Error('Sem resposta do servidor Wowza na porta 555');
-            }
+            // Usamos a porta 8087 (REST API) que já está funcionando no seu Wowza 4.9.6
+            // O endpoint 'actions/restart' faz com que o Wowza recarregue as configurações e playlists
+            const path = `vhosts/_defaultVHost_/applications/${login}/actions/restart`;
 
-            const text = await response.text();
-            console.log(`[RELOAD] Resposta do Wowza: ${text}`);
+            const result = await this.wowzaRequest(server.ip, path, 'PUT');
 
-            if (text.includes('DONE') || text.includes('Success')) {
-                await this.logStreamingAction(streaming.codigo, 'Playlists recarregadas via HTTP');
-                return { success: true, message: 'Playlists recarregadas com sucesso' };
+            // Na REST API do Wowza, o sucesso retorna um objeto com 'success: true'
+            if (result && result.success) {
+                console.log(`[RELOAD] Sucesso: Aplicação ${login} reiniciada.`);
+                await this.logStreamingAction(streaming.codigo, 'Playlist atualizada via Restart API');
+
+                return {
+                    success: true,
+                    message: 'Playlists recarregadas com sucesso (Aplicação reiniciada)'
+                };
             } else {
-                throw new Error(`Wowza retornou: ${text || 'Resposta Vazia'}`);
+                throw new Error('O Wowza não confirmou o reinício da aplicação via API.');
             }
+
         } catch (error) {
-            // Aqui evitamos o 'undefined' garantindo que sempre haja uma string
-            const errorMsg = error.message || error.toString() || 'Erro desconhecido na comunicação';
+            const errorMsg = error.message || 'Erro ao conectar na REST API do Wowza';
             console.error(`❌ Erro ao recarregar playlists (${login}):`, errorMsg);
-            
-            return { 
-                success: false, 
-                message: 'Não foi possível recarregar as playlists', 
-                error: errorMsg 
+
+            return {
+                success: false,
+                message: 'Não foi possível atualizar a playlist via API',
+                error: errorMsg
             };
         }
     }
