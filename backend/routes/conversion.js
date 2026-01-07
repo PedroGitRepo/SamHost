@@ -13,18 +13,18 @@ router.get('/videos', authMiddleware, async (req, res) => {
     const folderId = req.query.folder_id;
 
     if (!folderId) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'folder_id é obrigatório' 
+      return res.status(400).json({
+        success: false,
+        error: 'folder_id é obrigatório'
       });
     }
-    
+
     // Remover filtro de compatibilidade - permitir conversão de TODOS os vídeos
     let whereClause = `WHERE (v.codigo_cliente = ? OR v.codigo_cliente IN (
       SELECT codigo_cliente FROM streamings WHERE codigo = ?
     )) AND v.pasta = ? AND v.nome IS NOT NULL AND v.nome != ''`;
     let params = [userId, userId, folderId];
-    
+
     // Buscar vídeos do banco com informações de conversão
     const [rows] = await db.execute(
       `SELECT 
@@ -54,25 +54,25 @@ router.get('/videos', authMiddleware, async (req, res) => {
     );
 
     console.log(`📊 Encontrados ${rows.length} vídeos para conversão na pasta ${folderId}`);
-    
+
     // Função para verificar compatibilidade de codec
     const isCompatibleCodec = (codecName) => {
       const compatibleCodecs = ['h264', 'h265', 'hevc'];
       return compatibleCodecs.includes(codecName?.toLowerCase());
     };
-    
+
     const videos = rows.map(video => {
       const currentBitrate = video.bitrate_video || 0;
       const userBitrateLimit = video.user_bitrate_limit || 2500;
-      
+
       // Verificar compatibilidade completa
       const isMP4 = video.is_mp4 === 1;
-      const codecCompatible = isCompatibleCodec(video.codec_video) || 
-                              video.codec_video === 'h264' || 
-                              video.codec_video === 'h265' || 
-                              video.codec_video === 'hevc';
+      const codecCompatible = isCompatibleCodec(video.codec_video) ||
+        video.codec_video === 'h264' ||
+        video.codec_video === 'h265' ||
+        video.codec_video === 'hevc';
       const bitrateWithinLimit = currentBitrate <= userBitrateLimit;
-      
+
       // Lógica de compatibilidade atualizada - TODOS os vídeos podem ser convertidos
       const isFullyCompatible = isMP4 && codecCompatible && bitrateWithinLimit;
       const needsConversion = !isFullyCompatible;
@@ -165,10 +165,10 @@ router.get('/videos', authMiddleware, async (req, res) => {
     });
   } catch (err) {
     console.error('Erro ao buscar vídeos para conversão:', err);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro ao buscar vídeos para conversão', 
-      details: err.message 
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao buscar vídeos para conversão',
+      details: err.message
     });
   }
 });
@@ -229,10 +229,10 @@ router.get('/qualities', authMiddleware, async (req, res) => {
     });
   } catch (err) {
     console.error('Erro ao buscar qualidades:', err);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro ao buscar qualidades', 
-      details: err.message 
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao buscar qualidades',
+      details: err.message
     });
   }
 });
@@ -246,9 +246,9 @@ router.post('/convert', authMiddleware, async (req, res) => {
     const overwrite = req.body.overwrite || false;
 
     if (!video_id) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'ID do vídeo é obrigatório' 
+      return res.status(400).json({
+        success: false,
+        error: 'ID do vídeo é obrigatório'
       });
     }
 
@@ -262,9 +262,9 @@ router.post('/convert', authMiddleware, async (req, res) => {
     );
 
     if (videoRows.length === 0) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Vídeo não encontrado' 
+      return res.status(404).json({
+        success: false,
+        error: 'Vídeo não encontrado'
       });
     }
 
@@ -277,13 +277,13 @@ router.post('/convert', authMiddleware, async (req, res) => {
     if (!inputPath.startsWith('/home/streaming/')) {
       inputPath = `/home/streaming/${userLogin}/${video.folder_name}/${video.nome}`;
     }
-    
+
     // Verificar se arquivo existe no servidor
     const fileInfo = await SSHManager.getFileInfo(serverId, inputPath);
-    
+
     if (!fileInfo.exists) {
-      return res.status(404).json({ 
-        success: false, 
+      return res.status(404).json({
+        success: false,
         error: 'Arquivo não encontrado no servidor. Verifique se o vídeo foi enviado corretamente.',
         debug_info: {
           video_id: video_id,
@@ -293,22 +293,22 @@ router.post('/convert', authMiddleware, async (req, res) => {
         }
       });
     }
-    
+
     // Determinar configurações de conversão
     let targetBitrate, targetResolution, qualityLabel;
 
     if (use_custom || quality === 'custom') {
       if (!custom_bitrate || !custom_resolution) {
-        return res.status(400).json({ 
-          success: false, 
-          error: 'Bitrate e resolução customizados são obrigatórios para conversão personalizada' 
+        return res.status(400).json({
+          success: false,
+          error: 'Bitrate e resolução customizados são obrigatórios para conversão personalizada'
         });
       }
 
       if (custom_bitrate > userBitrateLimit) {
-        return res.status(400).json({ 
-          success: false, 
-          error: `Bitrate customizado (${custom_bitrate} kbps) excede o limite do plano (${userBitrateLimit} kbps)` 
+        return res.status(400).json({
+          success: false,
+          error: `Bitrate customizado (${custom_bitrate} kbps) excede o limite do plano (${userBitrateLimit} kbps)`
         });
       }
 
@@ -326,16 +326,16 @@ router.post('/convert', authMiddleware, async (req, res) => {
 
       const settings = qualitySettings[quality];
       if (!settings) {
-        return res.status(400).json({ 
-          success: false, 
-          error: 'Qualidade inválida' 
+        return res.status(400).json({
+          success: false,
+          error: 'Qualidade inválida'
         });
       }
 
       if (settings.bitrate > userBitrateLimit) {
-        return res.status(400).json({ 
-          success: false, 
-          error: `Qualidade selecionada excede o limite do plano (${userBitrateLimit} kbps)` 
+        return res.status(400).json({
+          success: false,
+          error: `Qualidade selecionada excede o limite do plano (${userBitrateLimit} kbps)`
         });
       }
 
@@ -347,6 +347,7 @@ router.post('/convert', authMiddleware, async (req, res) => {
     // Construir caminho de saída
     const outputFileName = video.nome.replace(/\.[^/.]+$/, `_${targetBitrate}kbps.mp4`);
     const outputPath = `/home/streaming/${userLogin}/${video.folder_name}/${outputFileName}`;
+    const outputDir = path.dirname(outputPath);
 
     // Verificar se conversão já existe
     const outputExists = await SSHManager.getFileInfo(serverId, outputPath);
@@ -464,10 +465,10 @@ router.post('/convert', authMiddleware, async (req, res) => {
 
   } catch (err) {
     console.error('Erro ao iniciar conversão:', err);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro ao iniciar conversão', 
-      details: err.message 
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao iniciar conversão',
+      details: err.message
     });
   }
 });
@@ -582,9 +583,9 @@ router.delete('/:videoId', authMiddleware, async (req, res) => {
     );
 
     if (videoRows.length === 0) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Conversão não encontrada' 
+      return res.status(404).json({
+        success: false,
+        error: 'Conversão não encontrada'
       });
     }
 
@@ -619,10 +620,10 @@ router.delete('/:videoId', authMiddleware, async (req, res) => {
 
   } catch (err) {
     console.error('Erro ao remover conversão:', err);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erro ao remover conversão', 
-      details: err.message 
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao remover conversão',
+      details: err.message
     });
   }
 });
@@ -729,6 +730,11 @@ router.post('/batch', authMiddleware, async (req, res) => {
           });
           continue;
         }
+
+        await SSHManager.executeCommand(
+          serverId,
+          `install -d -o wowza -g wowza -m 755 "${outputDir}"`
+        );
 
         // Verificar se conversão já existe
         const outputExists = await SSHManager.getFileInfo(serverId, outputPath);

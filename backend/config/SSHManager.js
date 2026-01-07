@@ -35,18 +35,18 @@ class SSHManager {
 
             // Criar nova conexão SSH
             const conn = new Client();
-            
+
             return new Promise((resolve, reject) => {
                 conn.on('ready', () => {
                     console.log(`✅ Conectado via SSH ao servidor ${server.ip}`);
-                    
+
                     const connectionData = {
                         conn,
                         server,
                         connected: true,
                         lastUsed: new Date()
                     };
-                    
+
                     this.connections.set(connectionKey, connectionData);
                     resolve(connectionData);
                 });
@@ -265,59 +265,32 @@ class SSHManager {
     }
 
     async createUserDirectory(serverId, userLogin) {
-        try {
-            // Estrutura simplificada: /home/streaming/[usuario]
-            const userDir = `/home/streaming/${userLogin}`;
-            const commands = [
-                `mkdir -p ${userDir}`,
-                `chmod -R 755 ${userDir} || true`,
-                `chown -R streaming:streaming ${userDir} || true`
-            ];
+        const userDir = `/home/streaming/${userLogin}`;
 
-            for (const command of commands) {
-                try {
-                    await this.executeCommand(serverId, command, 2); // 2 tentativas
-                } catch (cmdError) {
-                    console.warn(`Aviso ao executar comando "${command}":`, cmdError.message);
-                    // Continuar mesmo com erros de permissão
-                }
-            }
+        const command = `
+      install -d -o wowza -g wowza -m 755 "${userDir}"
+    `;
 
-            console.log(`✅ Diretório criado para usuário ${userLogin} no servidor ${serverId}`);
-            return { success: true, userDir };
-        } catch (error) {
-            console.error(`Erro ao criar diretório para usuário ${userLogin}:`, error);
-            return { success: false, error: error.message };
-        }
+        await this.executeCommand(serverId, command, 2);
+
+        console.log(`✅ Diretório criado com dono wowza: ${userDir}`);
+        return { success: true, userDir };
     }
+
 
     async createUserFolder(serverId, userLogin, folderName) {
-        try {
-            // Estrutura simplificada: /home/streaming/[usuario]/[pasta]
-            const folderPath = `/home/streaming/${userLogin}/${folderName}`;
-            const commands = [
-                `mkdir -p ${folderPath}`,
-                `chmod -R 755 ${folderPath} || true`,
-                `chown -R streaming:streaming ${folderPath} || true`
-            ];
+        const folderPath = `/home/streaming/${userLogin}/${folderName}`;
 
-            for (const command of commands) {
-                try {
-                    await this.executeCommand(serverId, command);
-                } catch (cmdError) {
-                    console.warn(`Aviso ao executar comando "${command}":`, cmdError.message);
-                    // Continuar mesmo com erros de permissão
-                }
-            }
+        const command = `
+      install -d -o wowza -g wowza -m 755 "${folderPath}"
+    `;
 
-            console.log(`✅ Pasta ${folderName} criada para usuário ${userLogin}`);
-            console.log(`📁 Caminho completo: ${folderPath}`);
-            return { success: true, folderPath };
-        } catch (error) {
-            console.error(`Erro ao criar pasta ${folderName}:`, error);
-            return { success: false, error: error.message };
-        }
+        await this.executeCommand(serverId, command, 2);
+
+        console.log(`✅ Pasta criada com dono wowza: ${folderPath}`);
+        return { success: true, folderPath };
     }
+
 
     // Criar estrutura completa do usuário (streaming + wowza)
     async createCompleteUserStructure(serverId, userLogin, userConfig) {
@@ -326,7 +299,7 @@ class SSHManager {
 
             // Criar estrutura básica de streaming
             const result = await this.createUserDirectory(serverId, userLogin);
-            
+
             if (!result.success) {
                 console.warn(`Aviso ao criar diretório para ${userLogin}:`, result.error);
                 // Continuar mesmo com erro
@@ -380,7 +353,7 @@ class SSHManager {
         try {
             const command = `rm -f "${remotePath}"`;
             await this.executeCommand(serverId, command);
-            
+
             console.log(`✅ Arquivo removido: ${remotePath}`);
             return { success: true };
         } catch (error) {
@@ -393,7 +366,7 @@ class SSHManager {
         try {
             const command = `ls -la "${remotePath}"`;
             const result = await this.executeCommand(serverId, command);
-            
+
             return { success: true, files: result.stdout };
         } catch (error) {
             console.error(`Erro ao listar arquivos em ${remotePath}:`, error);
@@ -405,13 +378,13 @@ class SSHManager {
         try {
             const command = `ls -la "${remotePath}" 2>/dev/null || echo "FILE_NOT_FOUND"`;
             const result = await this.executeCommand(serverId, command);
-            
+
             if (result.stdout.includes('FILE_NOT_FOUND')) {
                 return { exists: false };
             }
 
-            return { 
-                exists: true, 
+            return {
+                exists: true,
                 info: result.stdout,
                 size: this.extractFileSize(result.stdout),
                 permissions: this.extractPermissions(result.stdout)
@@ -447,7 +420,7 @@ class SSHManager {
                     if (serverRows.length > 0) {
                         const server = serverRows[0];
                         const connectionKey = `${server.ip}:${server.porta_ssh}`;
-                        
+
                         if (this.connections.has(connectionKey)) {
                             const { conn } = this.connections.get(connectionKey);
                             conn.end();
